@@ -1,5 +1,46 @@
-cd C:\Users\bck05\Desktop\Yorizo\frontend
+name: Deploy Yorizo Frontend to Azure Web App
 
-git add .github/workflows/frontend-azure-deploy.yml
-git commit -m "Fix workflow to run from repo root"
-git push origin main
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: yorizo-frontend-app   # ★ここをフロント用 App Service 名に合わせる
+  AZURE_WEBAPP_PACKAGE_PATH: '.'           # リポジトリ直下をデプロイ
+  NODE_VERSION: '20.x'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # cache系はいったん無しでOK
+          # cache: 'npm'
+          # cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
