@@ -8,7 +8,6 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: arimakinen-or-die-app-frontend-encsefebejdxdqav
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
   NODE_VERSION: '20.x'
 
 jobs:
@@ -24,8 +23,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # ⬇⬇⬇ 最重要：ビルドに環境変数を渡す
-      - name: Set environment variables
+      # 🔥 ビルド時に NEXT_PUBLIC_API_BASE_URL を埋め込む
+      - name: Inject NEXT_PUBLIC_API_BASE_URL
         run: echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> $GITHUB_ENV
 
       - name: Install dependencies
@@ -36,12 +35,16 @@ jobs:
             npm install
           fi
 
-      - name: Build
+      - name: Build project
         run: npm run build
+
+      # 🔥 Next.js を Azure が動かせる形式へ zip 化
+      - name: Prepare artifact
+        run: zip -r release.zip .next public package.json next.config.mjs node_modules
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          package: release.zip
