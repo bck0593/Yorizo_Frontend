@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: arimakinen-or-die-app-frontend-encsefebejdxdqav
   NODE_VERSION: '20.x'
+  NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
 jobs:
   build-and-deploy:
@@ -23,9 +23,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Inject NEXT_PUBLIC_API_BASE_URL
-        run: echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: |
           if [ -f package-lock.json ]; then
@@ -34,15 +31,15 @@ jobs:
             npm install
           fi
 
-      - name: Build project
+      - name: Build
         run: npm run build
 
+      # Next.js を Azure に配布する zip に固める
       - name: Prepare artifact
-        run: zip -r release.zip .next public package.json package-lock.json next.config.mjs node_modules
+        run: zip -r release.zip .next public package.json next.config.mjs node_modules
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: release.zip
