@@ -7,13 +7,17 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: yorizo-frontend-app   # ★ここをフロント用 App Service 名に合わせる
-  AZURE_WEBAPP_PACKAGE_PATH: '.'           # リポジトリ直下をデプロイ
+  AZURE_WEBAPP_NAME: arimakinen-or-die-app-frontend-encsefebejdxdqav # set to frontend App Service name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   NODE_VERSION: '20.x'
+  WORKING_DIRECTORY: frontend
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
     steps:
       - name: Checkout repository
@@ -23,9 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          # cache系はいったん無しでOK
-          # cache: 'npm'
-          # cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
         run: |
