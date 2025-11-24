@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react"
+import { ChangeEvent, Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Camera, FileUp, SendHorizontal, X } from "lucide-react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { MascotIcon } from "@/components/MascotIcon"
@@ -112,6 +112,14 @@ function ChatBubble({
 }
 
 export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="p-4">Loading chat...</div>}>
+      <ChatPageContent />
+    </Suspense>
+  )
+}
+
+function ChatPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialConversationId = searchParams.get("conversationId") || null
