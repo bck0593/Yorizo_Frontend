@@ -124,6 +124,17 @@ export default function ConfirmPage() {
           <p className="text-sm font-semibold text-emerald-700">予約を受け付けました</p>
           <p className="text-xs text-emerald-700">{result.message}</p>
           <p className="text-[11px] text-emerald-600">予約ID: {result.booking_id}</p>
+          {result.meeting_url ? (
+            <p className="text-xs text-emerald-700 break-all">
+              オンラインURL:{" "}
+              <a className="underline" href={result.meeting_url} target="_blank" rel="noreferrer">
+                {result.meeting_url}
+              </a>
+            </p>
+          ) : (
+            channel === "online" && <p className="text-[11px] text-emerald-700">オンラインURLは確定後にお知らせします。</p>
+          )}
+          {result.line_contact && <p className="text-xs text-emerald-700 break-all">LINE連絡先: {result.line_contact}</p>}
           <button
             type="button"
             onClick={() => router.push("/yorozu")}
