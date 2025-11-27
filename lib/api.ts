@@ -302,6 +302,8 @@ export type ConsultationBookingPayload = {
   phone?: string
   email?: string
   note?: string
+  meeting_url?: string
+  line_contact?: string
 }
 
 export type ConsultationBookingResponse = {
@@ -310,6 +312,8 @@ export type ConsultationBookingResponse = {
   date: string
   time_slot: string
   channel: string
+  meeting_url?: string | null
+  line_contact?: string | null
   message: string
 }
 
@@ -380,4 +384,87 @@ export async function listDocuments(userId?: string): Promise<DocumentItem[]> {
   if (!res.ok) throw new Error(`documents fetch failed: ${res.status}`)
   const data = await res.json()
   return data?.documents ?? []
+}
+
+
+export type AdminBooking = {
+  id: string
+  expert_id: string
+  expert_name?: string | null
+  user_id?: string | null
+  user_name?: string | null
+  channel: string
+  status: string
+  conversation_id?: string | null
+  date: string
+  time_slot: string
+  name: string
+  phone?: string | null
+  email?: string | null
+  note?: string | null
+  meeting_url?: string | null
+  line_contact?: string | null
+  created_at: string
+}
+
+export async function getAdminBookings(params?: {
+  limit?: number
+  offset?: number
+  channel?: string
+  status?: string
+  date_from?: string
+  date_to?: string
+  expert_id?: string
+}): Promise<AdminBooking[]> {
+  const query = new URLSearchParams()
+  if (params?.limit) query.set("limit", String(params.limit))
+  if (params?.offset) query.set("offset", String(params.offset))
+  if (params?.channel) query.set("channel", params.channel)
+  if (params?.status) query.set("status", params.status)
+  if (params?.date_from) query.set("date_from", params.date_from)
+  if (params?.date_to) query.set("date_to", params.date_to)
+  if (params?.expert_id) query.set("expert_id", params.expert_id)
+  const qs = query.toString()
+  const res = await fetch(`${API_BASE_URL}/api/admin/bookings${qs ? `?${qs}` : ""}`, { cache: "no-store" })
+  if (!res.ok) throw new Error(`admin bookings fetch failed: ${res.status}`)
+  const data = await res.json()
+  return data?.bookings ?? []
+}
+
+
+export async function getAdminBooking(id: string): Promise<AdminBooking> {
+  const res = await fetch(`${API_BASE_URL}/api/admin/bookings/${id}`, { cache: "no-store" })
+  if (!res.ok) throw new Error(`admin booking fetch failed: ${res.status}`)
+  return res.json()
+}
+
+export async function updateAdminBooking(
+  id: string,
+  payload: { status?: string; note?: string | null; conversation_id?: string | null; meeting_url?: string | null; line_contact?: string | null },
+): Promise<AdminBooking> {
+  const res = await fetch(`${API_BASE_URL}/api/admin/bookings/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error(`admin booking update failed: ${res.status}`)
+  return res.json()
+}
+
+export type SimilarCase = {
+  title: string
+  industry: string
+  result: string
+  actions: string[]
+}
+
+export async function getCaseExamples(params?: { channel?: string; industry?: string }): Promise<SimilarCase[]> {
+  const query = new URLSearchParams()
+  if (params?.channel) query.set("channel", params.channel)
+  if (params?.industry) query.set("industry", params.industry)
+  const qs = query.toString()
+  const res = await fetch(`${API_BASE_URL}/api/case-examples${qs ? `?${qs}` : ""}`, { cache: "no-store" })
+  if (!res.ok) throw new Error(`case examples fetch failed: ${res.status}`)
+  const data = await res.json()
+  return data?.cases ?? []
 }
