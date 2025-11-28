@@ -7,7 +7,7 @@ export default function AboutPage() {
         <p className="text-sm text-slate-700 leading-relaxed">
           Yorizo は、小規模事業者の「経営のモヤモヤ」を整える AI パートナーです。チャットで悩みを言語化し、
           かんたん診断で状況をまとめ、よろず支援拠点などの公的支援につなげます。専門用語を使いすぎず、
-          やさしいトーンで寄り添いながら、次の一歩を一緒に考えます。
+          やさしいトーンで寄り添いながら、次の一歩を共にに考えます。
         </p>
       </div>
     </div>
