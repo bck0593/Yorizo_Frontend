@@ -74,7 +74,8 @@ export type HomeworkTask = {
   title: string
   detail?: string | null
   category?: string | null
-  status: "pending" | "done"
+  timeframe?: string | null
+  status: "pending" | "in_progress" | "done"
   due_date?: string | null
   created_at: string
   updated_at: string
@@ -143,12 +144,29 @@ export async function deleteHomework(taskId: number): Promise<void> {
   if (!res.ok) throw new Error(`homework delete failed: ${res.status}`)
 }
 
+export type CompanyProfileSummary = {
+  company_name?: string | null
+  industry?: string | null
+  employees_range?: string | null
+  annual_sales_range?: string | null
+  location_prefecture?: string | null
+}
+
+export type MemorySummary = {
+  current_summary: string[]
+  key_problems: string[]
+  homework: HomeworkTask[]
+  expert_points: string[]
+  company_profile?: CompanyProfileSummary | null
+}
+
 export type MemoryResponse = {
   current_concerns: string[]
   important_points_for_expert: string[]
   nickname: string
   remembered_facts: string[]
   past_conversations: { id: string; title: string; date: string }[]
+  summary: MemorySummary
 }
 
 export async function getMemory(userId: string): Promise<MemoryResponse | null> {
@@ -257,6 +275,16 @@ export type CompanyAnalysisCategory = {
   items: string[]
 }
 
+export type LocalBenchmarkAxis = {
+  id: string
+  label: string
+  score: number
+}
+
+export type LocalBenchmark = {
+  axes: LocalBenchmarkAxis[]
+}
+
 export type CompanyAnalysisReport = {
   company_id: string
   last_updated_at: string | null
@@ -267,6 +295,7 @@ export type CompanyAnalysisReport = {
   strengths: string[]
   weaknesses: string[]
   action_items: string[]
+  local_benchmark?: LocalBenchmark | null
 }
 
 export async function getCompanyAnalysisReport(companyId: string): Promise<CompanyAnalysisReport> {
@@ -296,6 +325,7 @@ export type ConversationReport = {
   weaknesses: string[]
   homework: ReportHomework[]
   key_topics?: string[]
+  local_benchmark?: LocalBenchmark | null
 }
 
 export async function getConversationReport(conversationId: string): Promise<ConversationReport> {

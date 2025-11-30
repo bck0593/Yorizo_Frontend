@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
@@ -62,30 +62,15 @@ export default function ConsultationMemoPage() {
     return cleanConversationTitle(title)
   }, [conversation, report])
 
+  const summaryItems = report?.summary ?? []
+  const keyTopics = report?.key_topics ?? []
+  const expertPoints = report?.for_expert ?? []
+
   const memoDate = useMemo(() => {
     const raw = conversation?.ended_at ?? conversation?.started_at ?? report?.created_at
     if (!raw) return ""
     return new Date(raw).toLocaleDateString("ja-JP")
   }, [conversation, report])
-
-  const pendingTasks = useMemo(
-    () =>
-      (report?.homework ?? []).filter((task) => {
-        if (!task.status) return true
-        return task.status === "pending"
-      }),
-    [report],
-  )
-
-  const expertPoint = useMemo(() => {
-    const parts: string[] = []
-    if (memoTitle) parts.push(`主な関心事は「${memoTitle}」です`)
-    const categoryLabel = conversation?.category ?? report?.category
-    if (categoryLabel) parts.push(`カテゴリは${categoryLabel}`)
-    if (conversation?.step) parts.push(`ステップ${conversation.step}まで回答済みです`)
-    if (parts.length === 0) return null
-    return `${parts.join("。")}。`
-  }, [conversation, memoTitle, report])
 
   const handleRefresh = () => {
     setRefreshKey((prev) => prev + 1)
@@ -159,36 +144,62 @@ export default function ConsultationMemoPage() {
             </p>
           </header>
 
-          <section className="yori-card p-5 space-y-2">
-            <p className="text-base font-semibold text-[var(--yori-ink-strong)]">会話の中で整理された課題</p>
-            <p className="text-sm text-[var(--yori-ink)]">{memoTitle || "課題はまだ整理されていません。"}</p>
-          </section>
+          {/* 3本柱ゾーン */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {/* 1. 今回の整理 */}
+            <section className="yori-card p-5 space-y-3">
+              <div className="space-y-1">
+                <p className="text-base font-semibold text-[var(--yori-ink-strong)]">今回の整理</p>
+                <p className="text-xs text-[var(--yori-ink-soft)]">
+                  最新のチャット内容をもとに、今回のポイントを整理しています。
+                </p>
+              </div>
+              {summaryItems.length > 0 ? (
+                <ul className="list-disc list-inside space-y-1 text-sm text-[var(--yori-ink)] leading-relaxed">
+                  {summaryItems.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-[var(--yori-ink)] leading-relaxed">相談内容は準備中です。</p>
+              )}
+            </section>
 
-          <section className="yori-card p-5 space-y-3">
-            <p className="text-base font-semibold text-[var(--yori-ink-strong)]">今取り組むべきこと</p>
-            {pendingTasks.length === 0 ? (
-              <p className="text-sm text-[var(--yori-ink)]">今すぐ取り組むべき課題はありません。</p>
-            ) : (
-              <ul className="list-disc list-inside space-y-2 text-sm text-[var(--yori-ink)]">
-                {pendingTasks.map((task) => (
-                  <li key={`${task.id ?? task.title}`}>{task.title}</li>
-                ))}
-              </ul>
-            )}
-          </section>
+            {/* 2. 見えてきた主な課題 */}
+            <section className="yori-card p-5 space-y-3">
+              <p className="text-base font-semibold text-[var(--yori-ink-strong)]">見えてきた主な課題</p>
+              {keyTopics.length > 0 ? (
+                <ul className="list-disc list-inside space-y-1 text-sm text-[var(--yori-ink)]">
+                  {keyTopics.map((topic) => (
+                    <li key={topic}>{topic}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-[var(--yori-ink)]">課題はまだ整理されていません。</p>
+              )}
+            </section>
 
-          <section className="yori-card p-5 space-y-3">
-            <p className="text-base font-semibold text-[var(--yori-ink-strong)]">専門家に相談する際に伝えるべきポイント</p>
-            {expertPoint ? (
-              <p className="text-sm text-[var(--yori-ink)] leading-relaxed">{expertPoint}</p>
-            ) : (
-              <p className="text-sm text-[var(--yori-ink)]">特別に伝えるポイントはまだありません。</p>
-            )}
-          </section>
+            {/* 3. 専門家に伝えたいポイント */}
+            <section className="yori-card p-5 space-y-3 lg:col-span-2">
+              <p className="text-base font-semibold text-[var(--yori-ink-strong)]">
+                専門家に相談する際に伝えるべきポイント
+              </p>
+              {expertPoints.length > 0 ? (
+                <ul className="list-disc list-inside space-y-1 text-sm text-[var(--yori-ink)] leading-relaxed">
+                  {expertPoints.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-[var(--yori-ink)]">特別に伝えるポイントはまだありません。</p>
+              )}
+            </section>
+          </div>
 
+          {/* CTA */}
           <div className="yori-card p-5 space-y-3">
             <p className="text-base font-semibold text-[var(--yori-ink-strong)]">よろず支援に相談する</p>
-            <p className="text-sm text-[var(--yori-ink)]">整理された内容をもとに、専門家と次の一歩を決めましょう。</p>
+            <p className="text-sm text-[var(--yori-ink)]">整えた内容をもとに、専門家と次の一歩を決めましょう。</p>
             <button
               type="button"
               onClick={() => router.push("/yorozu")}
