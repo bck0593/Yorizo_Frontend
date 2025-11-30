@@ -325,6 +325,7 @@ export type ConversationReport = {
   weaknesses: string[]
   homework: ReportHomework[]
   key_topics?: string[]
+  for_expert?: string[]
   local_benchmark?: LocalBenchmark | null
 }
 
