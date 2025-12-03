@@ -342,6 +342,47 @@ export async function getConversationReport(conversationId: string): Promise<Con
   return res.json()
 }
 
+export type RadarPeriod = {
+  label: string
+  scores: number[]
+  raw_values: number[]
+}
+
+export type RadarSection = {
+  axes: string[]
+  periods: RadarPeriod[]
+}
+
+export interface CompanySummary {
+  id: string | number
+  name?: string | null
+  industry?: string | null
+  employees?: number | null
+  annual_revenue_range?: string | null
+}
+
+export type QualitativeBlock = {
+  keieisha: Record<string, string>
+  jigyo: Record<string, string>
+  kankyo: Record<string, string>
+  naibu: Record<string, string>
+}
+
+export type CompanyReport = {
+  company: CompanySummary
+  radar: RadarSection
+  qualitative: QualitativeBlock
+  current_state: string
+  future_goal: string
+  action_plan: string
+}
+
+export async function getCompanyReport(companyId: string): Promise<CompanyReport> {
+  const res = await fetch(`${API_BASE_URL}/api/companies/${companyId}/report`, { cache: "no-store" })
+  if (!res.ok) throw new Error(`company report fetch failed: ${res.status}`)
+  return res.json()
+}
+
 export type CompanyProfile = {
   user_id: string
   company_name?: string | null
