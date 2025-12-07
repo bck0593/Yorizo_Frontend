@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { ArrowLeft, Check, Copy, Loader2, RefreshCcw } from "lucide-react"
-import { MascotIcon } from "@/components/MascotIcon"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { getConsultationMemo, refreshConsultationMemo, type ConsultationMemo } from "@/lib/api"
 
 export default function ConsultationMemoPage() {
@@ -152,7 +152,7 @@ export default function ConsultationMemoPage() {
 
           <div className="bg-white rounded-3xl shadow-sm border border-white/80 p-4 space-y-3 text-center">
             <div className="flex justify-center">
-              <MascotIcon size="md" />
+              <YorizoAvatar size="md" />
             </div>
             <p className="text-sm text-slate-800 leading-relaxed">
               相談メモは試験運用中の新しい機能だよ！ 感想があったら教えてね✨

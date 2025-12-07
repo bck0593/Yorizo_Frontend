@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Settings } from "lucide-react"
 
-import { MascotIcon } from "./MascotIcon"
+import { YorizoAvatar } from "./YorizoAvatar"
 
 type HeaderProps = {
   title?: string
@@ -29,7 +29,7 @@ export function Header({ title, showBackButton }: HeaderProps) {
             </button>
           )}
           <Link href="/" className="flex items-center gap-3 group">
-            <MascotIcon size="sm" />
+            <YorizoAvatar size="sm" />
             <div className="flex flex-col leading-tight">
               <span className="text-xs font-semibold text-[var(--yori-ink-soft)]">経営コンシェルジュ</span>
               <span className="text-xl font-bold tracking-tight text-[var(--yori-ink-strong)] group-hover:opacity-90 transition-opacity">
