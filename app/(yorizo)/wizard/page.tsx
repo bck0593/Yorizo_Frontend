@@ -1,12 +1,13 @@
 ﻿"use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, CheckCircle2, Sparkles } from "lucide-react"
 
 import { YoriCard } from "@/components/YoriCard"
 import { VoiceInputControls } from "@/components/voice/VoiceInputControls"
 import { YorizoAvatar } from "@/components/YorizoAvatar"
+import { ThinkingRow } from "@/components/ThinkingRow"
 
 type Question = {
   id: string
@@ -125,6 +126,8 @@ export default function WizardPage() {
   const [textValue, setTextValue] = useState("")
   const [error, setError] = useState("")
   const [done, setDone] = useState(false)
+  const [thinking, setThinking] = useState(false)
+  const thinkingTimerRef = useRef<NodeJS.Timeout | null>(null)
   const total = QUESTIONS.length
   const current = QUESTIONS[currentIndex]
 
@@ -148,30 +151,64 @@ export default function WizardPage() {
     setCurrentIndex((prev) => Math.min(prev + 1, total - 1))
   }
 
+  const clearThinkingTimer = () => {
+    if (thinkingTimerRef.current) {
+      clearTimeout(thinkingTimerRef.current)
+      thinkingTimerRef.current = null
+    }
+  }
+
+  const startThinkingTransition = (delay = 260) => {
+    clearThinkingTimer()
+    setThinking(true)
+    thinkingTimerRef.current = setTimeout(() => {
+      goNext()
+      setThinking(false)
+      thinkingTimerRef.current = null
+    }, delay)
+  }
+
+  useEffect(
+    () => () => {
+      if (thinkingTimerRef.current) {
+        clearTimeout(thinkingTimerRef.current)
+      }
+    },
+    [],
+  )
+
   const goPrev = () => {
     setError("")
+    clearThinkingTimer()
+    setThinking(false)
     if (currentIndex === 0) return
     setCurrentIndex((prev) => Math.max(prev - 1, 0))
   }
 
   const handleAnswer = (value: string) => {
+    if (thinking) return
     setError("")
     setAnswers((prev) => ({ ...prev, [current.id]: value }))
     if (current.type !== "text") {
-      setTimeout(goNext, 200)
+      startThinkingTransition()
     }
   }
 
   const handleSubmitText = () => {
+    if (thinking) return
     if (!textValue.trim()) {
       setError("内容を入力してください。")
       return
     }
-    handleAnswer(textValue.trim())
-    goNext()
+    const nextValue = textValue.trim()
+    setError("")
+    setAnswers((prev) => ({ ...prev, [current.id]: nextValue }))
+    startThinkingTransition(320)
   }
 
   const resetWizard = () => {
+    clearThinkingTimer()
+    setThinking(false)
     setAnswers({})
     setTextValue("")
     setCurrentIndex(0)
@@ -340,6 +377,16 @@ export default function WizardPage() {
                 次へ進む
               </button>
             </div>
+          </div>
+        )}
+
+        {thinking && (
+          <div className="rounded-2xl bg-[var(--yori-secondary)] px-3 py-2">
+            <ThinkingRow
+              text="Yorizoが回答を整理しています..."
+              className="text-xs text-[var(--yori-ink-strong)]"
+              gap="compact"
+            />
           </div>
         )}
 

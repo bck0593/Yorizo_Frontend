@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 
 import ChatClient from "./ChatClient"
+import { ThinkingRow } from "@/components/ThinkingRow"
 
 type PageProps = {
   searchParams?: Record<string, string | string[] | undefined>
@@ -17,7 +18,7 @@ function ChatPageContent({ searchParams }: PageProps) {
 
 export default function ChatPage(props: PageProps) {
   return (
-    <Suspense fallback={<div className="p-4 text-sm text-[var(--yori-ink-soft)]">チャットを準備しています...</div>}>
+    <Suspense fallback={<ThinkingRow text="チャットを読み込み中..." className="p-4" />}>
       <ChatPageContent {...props} />
     </Suspense>
   )

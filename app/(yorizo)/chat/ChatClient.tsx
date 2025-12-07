@@ -9,6 +9,7 @@ import { ChatBubble } from "@/components/ui/chat-bubble"
 import { ChatCTAButtons } from "@/components/ui/chat-cta-buttons"
 import { ChatQuickOptions } from "@/components/ui/chat-quick-options"
 import { YorizoAvatar } from "@/components/YorizoAvatar"
+import { ThinkingRow } from "@/components/ThinkingRow"
 import {
   ApiError,
   LLM_FALLBACK_MESSAGE,
@@ -378,17 +379,18 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
       </div>
 
       {bootstrapLoading ? (
-        <div className="flex items-center gap-2 text-sm text-[var(--yori-ink-soft)] py-6">
-          <div className="h-4 w-4 rounded-full border-2 border-[var(--yori-outline)] border-t-[var(--yori-ink-strong)] animate-spin" />
-          <span>相談履歴を読み込んでいます...</span>
-        </div>
+        <ThinkingRow text="相談履歴を読み込んでいます..." className="py-6" />
       ) : (
         <div ref={messagesContainerRef} className="flex-1 min-h-[320px] space-y-4 overflow-y-auto pr-1">
           {messages.map((m) => renderMessage(m))}
           {loading && (
             <div className="flex justify-start">
-              <span className="rounded-full border border-slate-200 bg-white px-4 py-1 text-xs text-[var(--yori-ink-strong)] shadow-sm">
-                yorizoが考えています...
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 shadow-sm">
+                <ThinkingRow
+                  text="yorizoが考えています..."
+                  className="text-xs text-[var(--yori-ink-strong)]"
+                  gap="compact"
+                />
               </span>
             </div>
           )}

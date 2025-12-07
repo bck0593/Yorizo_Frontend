@@ -1,3 +1,4 @@
+import { act } from "react-dom/test-utils"
 import { render, screen, waitFor } from "@testing-library/react"
 
 import CompanyReportPage from "@/app/(yorizo)/components/report/CompanyReportPage"
@@ -36,6 +37,10 @@ const mockReport: CompanyReport = {
 }
 
 describe("CompanyReportPage", () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it("renders main action cards and fetches report", async () => {
     ;(getCompanyReport as jest.Mock).mockResolvedValue(mockReport)
     render(<CompanyReportPage />)
@@ -46,5 +51,25 @@ describe("CompanyReportPage", () => {
     expect(screen.getByRole("link", { name: "チャットを再開" })).toHaveAttribute("href", "/chat")
     expect(screen.getByRole("link", { name: /宿題を確認/ })).toHaveAttribute("href", "/homework")
     expect(screen.getByRole("link", { name: "専門家に相談" })).toHaveAttribute("href", "/yorozu")
+  })
+
+  it("shows the thinking row during report loading", async () => {
+    let resolveReport: ((value: CompanyReport) => void) | null = null
+    ;(getCompanyReport as jest.Mock).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveReport = resolve
+        }),
+    )
+
+    render(<CompanyReportPage />)
+
+    const thinkingRow = await screen.findByRole("status", { name: /レポートを生成中です/ })
+    const image = thinkingRow.querySelector('img[aria-hidden="true"]')
+    expect(image).toBeTruthy()
+
+    await act(async () => {
+      resolveReport?.(mockReport)
+    })
   })
 })
