@@ -1,8 +1,8 @@
 :root {
   /* Core palette */
-  --yori-canvas: #fffefe;
+  --yori-canvas: #e8f5f8;
   --yori-surface: #ffffff;
-  --yori-surface-muted: #f6fbfb;
+  --yori-surface-muted: #eef7fb;
   --yori-surface-strong: #f1f5f9;
   --yori-ink-strong: #272343;
   --yori-ink: #2d334a;
@@ -34,8 +34,8 @@
   --yori-font-sans: "Noto Sans JP", "Inter", "Manrope", system-ui, -apple-system, sans-serif;
 
   /* Gradients + decoration */
-  --yori-gradient-hero: radial-gradient(160% 160% at 15% 0%, #e3f6f5 0%, #fffefe 38%, #fffefe 65%, #bae8e8 100%);
-  --yori-gradient-card: linear-gradient(180deg, rgba(227, 246, 245, 0.65) 0%, rgba(255, 254, 254, 0.92) 100%);
+  --yori-gradient-hero: linear-gradient(180deg, #e8f5f8 0%, #e8f5f8 100%);
+  --yori-gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.92) 100%);
 }
 
 @media (min-width: 1024px) {

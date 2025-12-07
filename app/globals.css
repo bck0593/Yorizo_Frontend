@@ -13,7 +13,7 @@
 }
 
 body {
-  background: var(--yori-gradient-hero);
+  background: var(--yori-canvas);
   color: var(--yori-ink);
   font-family: var(--yori-font-sans);
   min-height: 100vh;

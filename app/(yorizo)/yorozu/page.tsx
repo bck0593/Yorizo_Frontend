@@ -1,8 +1,10 @@
 "use client"
 
+import Link from "next/link"
 import { Suspense, useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Tag, Loader2, MessageSquare, ChevronRight } from "lucide-react"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { getExperts, type Expert } from "@/lib/api"
 
 const filters = ["すべて", "売上", "人材", "資金繰り", "業務改善", "補助金"]
@@ -49,12 +51,13 @@ function YorozuExpertsPageContent() {
     if (activeFilter === "すべて") return experts
     return experts.filter((expert) => expert.tags.some((tag) => tag.includes(activeFilter)))
   }, [experts, activeFilter])
+  const primaryScheduleHref = experts[0] ? `/yorozu/experts/${experts[0].id}/schedule` : null
 
   return (
     <div className="flex flex-col gap-5">
       <section className="yori-card-muted p-5 md:p-6 space-y-3">
         <div className="flex items-start gap-3">
-          <MessageSquare className="h-6 w-6 text-[var(--yori-ink-strong)]" />
+          <YorizoAvatar mood="expert" size="sm" />
           <div className="space-y-1">
             <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">よろず相談</p>
             <p className="text-sm text-[var(--yori-ink)] leading-relaxed">
@@ -76,6 +79,33 @@ function YorozuExpertsPageContent() {
         </div>
       </section>
 
+      <section className="grid gap-3 md:grid-cols-3">
+        <Link
+          href="/chat"
+          className="yori-card p-4 flex flex-col gap-1 border border-[var(--yori-outline)] hover:border-[var(--yori-tertiary)] transition"
+        >
+          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">チャットで相談</p>
+          <p className="text-xs text-[var(--yori-ink-soft)]">モヤモヤをすぐ話して整理する</p>
+        </Link>
+        <Link
+          href="/report"
+          className="yori-card p-4 flex flex-col gap-1 border border-[var(--yori-outline)] hover:border-[var(--yori-tertiary)] transition"
+        >
+          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">イマココレポートを見る</p>
+          <p className="text-xs text-[var(--yori-ink-soft)]">相談メモと宿題を1枚で確認</p>
+        </Link>
+        <Link
+          href={primaryScheduleHref ?? "/yorozu"}
+          className="yori-card p-4 flex flex-col gap-1 border border-[var(--yori-outline)] hover:border-[var(--yori-tertiary)] transition"
+          aria-disabled={!primaryScheduleHref}
+        >
+          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">専門家に予約する</p>
+          <p className="text-xs text-[var(--yori-ink-soft)]">
+            {primaryScheduleHref ? "おすすめの専門家に進む" : "専門家情報を読み込み中"}
+          </p>
+        </Link>
+      </section>
+
       {isLoading && (
         <div className="flex items-center gap-2 text-sm text-[var(--yori-ink-soft)]">
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -91,9 +121,7 @@ function YorozuExpertsPageContent() {
             className="yori-card p-5 space-y-3 border border-[var(--yori-outline)]"
           >
             <div className="flex items-start gap-3">
-            <div className="h-12 w-12 rounded-full bg-[var(--yori-secondary)] border border-[var(--yori-outline)] flex items-center justify-center text-sm font-semibold text-[var(--yori-ink-strong)]">
-              {expert.name.slice(0, 2)}
-            </div>
+              <YorizoAvatar mood="expert" size="sm" />
             <div className="flex-1 space-y-1">
               <p className="text-base font-semibold text-[var(--yori-ink-strong)]">{expert.name}</p>
                 {expert.organization && (

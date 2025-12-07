@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ChevronRight, Folder, Sprout } from "lucide-react"
 
-import { MascotIcon } from "@/components/MascotIcon"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { CompanyInfoSummaryCard } from "@/components/company/CompanyInfoSummaryCard"
 import {
   getCompanyProfile,
@@ -64,7 +64,7 @@ export default async function MemoryPage() {
       <section className="yori-card-muted p-5 md:p-6 space-y-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-3">
-            <MascotIcon size="lg" />
+            <YorizoAvatar size="lg" />
             <div className="space-y-1">
               <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">Yorizoの記憶</p>
               <p className="text-sm text-[var(--yori-ink)] leading-relaxed">

@@ -4,9 +4,11 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "re
 import { ArrowRight, FileUp, SendHorizontal, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 
+import { VoiceInputControls } from "@/components/voice/VoiceInputControls"
 import { ChatBubble } from "@/components/ui/chat-bubble"
 import { ChatCTAButtons } from "@/components/ui/chat-cta-buttons"
 import { ChatQuickOptions } from "@/components/ui/chat-quick-options"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import {
   ApiError,
   LLM_FALLBACK_MESSAGE,
@@ -114,6 +116,7 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadMessage, setUploadMessage] = useState<string | null>(null)
+  const [voiceMessage, setVoiceMessage] = useState<string | null>(null)
 
   const messagesContainerRef = useRef<HTMLDivElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -189,6 +192,11 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
     el.style.height = "0px"
     const next = Math.min(el.scrollHeight, 140)
     el.style.height = `${Math.max(next, 44)}px`
+  }
+
+  const handleVoiceTranscript = (text: string) => {
+    setInput(text)
+    setTimeout(adjustTextareaHeight, 0)
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -316,36 +324,48 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
     const replyText = (msg.content || "").trim()
     const questionText = (msg.question || "").trim()
 
+    const bubble = (
+      <ChatBubble
+        role={msg.role}
+        bubbleClassName={
+          isAssistant
+            ? "bg-white border border-slate-200 rounded-2xl shadow-sm px-4 py-3 md:px-5 md:py-4"
+            : "text-[var(--yori-primary-ink)] bg-[var(--yori-primary)] rounded-3xl px-4 py-2 ml-auto"
+        }
+      >
+        {isAssistant ? (
+          <div className="space-y-2">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Yorizo からのメッセージ</p>
+            {replyText && (
+              <p className="text-sm text-slate-900 leading-relaxed whitespace-pre-line break-words">{replyText}</p>
+            )}
+            {questionText && (
+              <p className="text-sm font-semibold text-slate-800 leading-relaxed whitespace-pre-line break-words">
+                {questionText}
+              </p>
+            )}
+          </div>
+        ) : (
+          <span className="leading-relaxed whitespace-pre-line break-words">{msg.content}</span>
+        )}
+      </ChatBubble>
+    )
+
+    if (isAssistant) {
+      return (
+        <div key={msg.id} className="flex items-start gap-3">
+          <YorizoAvatar size="sm" mood={loading ? "thinking" : "basic"} className="mt-1" />
+          <div className="flex-1 space-y-1">{bubble}</div>
+        </div>
+      )
+    }
+
     return (
-      <div key={msg.id} className="space-y-3">
-        <ChatBubble
-          role={msg.role}
-          bubbleClassName={
-            isAssistant
-              ? "bg-white border border-slate-200 rounded-2xl shadow-sm px-4 py-3 md:px-5 md:py-4"
-              : "text-[var(--yori-primary-ink)] bg-[var(--yori-primary)] rounded-3xl px-4 py-2 ml-auto"
-          }
-        >
-          {isAssistant ? (
-            <div className="space-y-2">
-              <p className="text-[11px] uppercase tracking-wide text-slate-500">yorizo からのメッセージ</p>
-              {replyText && (
-                <p className="text-sm text-slate-900 leading-relaxed whitespace-pre-line break-words">{replyText}</p>
-              )}
-              {questionText && (
-                <p className="text-sm font-semibold text-slate-800 leading-relaxed whitespace-pre-line break-words">
-                  {questionText}
-                </p>
-              )}
-            </div>
-          ) : (
-            <span className="leading-relaxed whitespace-pre-line break-words">{msg.content}</span>
-          )}
-        </ChatBubble>
+      <div key={msg.id} className="flex justify-end">
+        {bubble}
       </div>
     )
   }
-
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-4 pb-24 px-4 md:px-6">
       <div className="flex items-center justify-between text-xs text-[var(--yori-ink-soft)] py-2">
@@ -375,6 +395,7 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
           {error && <p className="text-xs text-rose-600">{error}</p>}
           {uploadError && <p className="text-xs text-rose-600">{uploadError}</p>}
           {uploadMessage && <p className="text-xs text-emerald-600">{uploadMessage}</p>}
+          {voiceMessage && <p className="text-xs text-[var(--yori-ink-soft)]">{voiceMessage}</p>}
         </div>
       )}
 
@@ -420,8 +441,8 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="sticky bottom-0 inset-x-0 border-t bg-slate-50/95 backdrop-blur">
-        <div className="mx-auto max-w-3xl px-3 py-2 md:px-4 md:py-3">
+                  <form onSubmit={handleSubmit} className="sticky bottom-0 inset-x-0 border-t bg-slate-50/95 backdrop-blur">
+        <div className="mx-auto max-w-3xl px-3 py-2 md:px-4 md:py-3 space-y-2">
           <div className="flex items-center gap-2 rounded-2xl border bg-white px-4 py-2 shadow-sm">
             <button
               type="button"
@@ -451,6 +472,17 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
               <SendHorizontal className="h-4 w-4" />
             </button>
           </div>
+                    <VoiceInputControls
+            onTranscript={handleVoiceTranscript}
+            onStatusChange={(status, info) => {
+              if (info) {
+                setVoiceMessage(info)
+              } else if (status === "recording") {
+                setVoiceMessage("Recording... auto-stops at 1 minute.")
+              }
+            }}
+            disabled={loading}
+          />
         </div>
         <input
           ref={fileInputRef}

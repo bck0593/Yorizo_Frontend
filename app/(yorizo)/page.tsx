@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, FileText, LineChart, NotebookPen } from "lucide-react"
 
-import { MascotIcon } from "@/components/MascotIcon"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { getConversations, type ConversationSummary } from "@/lib/api"
 
 const USER_ID = "demo-user"
@@ -41,7 +41,7 @@ export default async function HomePage() {
       <section className="yori-card-muted p-6 md:p-8 space-y-6">
         <div className="flex flex-col gap-4 text-center">
           <div className="flex justify-center">
-            <MascotIcon size="lg" />
+            <YorizoAvatar size="lg" />
           </div>
           <div className="space-y-2">
             <p className="text-sm font-semibold text-[var(--yori-ink-soft)]">まずはモヤモヤを受け止める場所</p>
@@ -115,7 +115,7 @@ export default async function HomePage() {
         <h2 className="text-sm font-semibold text-[var(--yori-ink-soft)]">機能</h2>
         <div className="yori-card p-5 flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-start gap-3 flex-1">
-            <MascotIcon size="sm" />
+            <YorizoAvatar size="sm" />
             <div className="space-y-1">
               <p className="text-base font-semibold text-[var(--yori-ink-strong)]">経営のモヤモヤ かんたんチェック</p>
               <p className="text-sm text-[var(--yori-ink)] leading-relaxed">

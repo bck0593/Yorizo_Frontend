@@ -1,10 +1,12 @@
 ﻿"use client"
 
+import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, Sparkles } from "lucide-react"
+import { ArrowLeft, Loader2, Sparkles, MessageCircle, NotebookPen, Users } from "lucide-react"
 
 import { CompanyInfoSummaryCard } from "@/components/company/CompanyInfoSummaryCard"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { getCompanyReport, type CompanyReport } from "@/lib/api"
 import { useCompanyProfile } from "@/lib/hooks/useCompanyProfile"
 
@@ -288,6 +290,50 @@ export default function CompanyReportPage() {
           <p className="text-sm text-[var(--yori-ink)]">チャット・決算書・宿題・PDFをまとめた「いま」の鏡です。将来の一歩を考えるために活用してください。</p>
         </div>
       </header>
+
+      <section className="yori-card p-5 md:p-6 space-y-4">
+        <div className="flex items-start gap-3">
+          <YorizoAvatar size="sm" mood="satisfied" />
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">次の一歩をすぐ動ける場所をまとめました</p>
+            <p className="text-sm text-[var(--yori-ink)]">
+              相談メモ・宿題・専門家への導線を 1 タップで開けます。イマココレポートは「いま」を俯瞰するハブです。
+            </p>
+          </div>
+        </div>
+        <div className="grid gap-2 md:grid-cols-3">
+          <Link
+            href="/chat"
+            className="rounded-2xl border border-[var(--yori-outline)] bg-white px-4 py-3 flex items-center gap-3 hover:border-[var(--yori-tertiary)] transition"
+          >
+            <MessageCircle className="h-5 w-5 text-[var(--yori-ink-strong)]" />
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">チャットを再開</p>
+              <p className="text-xs text-[var(--yori-ink-soft)]">モヤモヤを話して宿題を整理</p>
+            </div>
+          </Link>
+          <Link
+            href="/homework"
+            className="rounded-2xl border border-[var(--yori-outline)] bg-white px-4 py-3 flex items-center gap-3 hover:border-[var(--yori-tertiary)] transition"
+          >
+            <NotebookPen className="h-5 w-5 text-[var(--yori-ink-strong)]" />
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">宿題を確認</p>
+              <p className="text-xs text-[var(--yori-ink-soft)]">完了・優先度を見直す</p>
+            </div>
+          </Link>
+          <Link
+            href="/yorozu"
+            className="rounded-2xl border border-[var(--yori-outline)] bg-white px-4 py-3 flex items-center gap-3 hover:border-[var(--yori-tertiary)] transition"
+          >
+            <Users className="h-5 w-5 text-[var(--yori-ink-strong)]" />
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">専門家に相談</p>
+              <p className="text-xs text-[var(--yori-ink-soft)]">よろず相談ハブから予約</p>
+            </div>
+          </Link>
+        </div>
+      </section>
 
       {error && <p className="text-sm text-rose-500">{error}</p>}
       {loading && (
