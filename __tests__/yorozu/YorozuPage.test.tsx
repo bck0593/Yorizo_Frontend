@@ -23,9 +23,9 @@ jest.mock("next/navigation", () => ({
 const experts = [
   {
     id: "1",
-    name: "テスト専門家",
+    name: "山田 太郎",
     title: "中小企業診断士",
-    organization: "よろず拠点",
+    organization: "東京よろず支援拠点",
     tags: ["売上", "資金繰り"],
     rating: 4.5,
     review_count: 10,
@@ -37,7 +37,9 @@ describe("Yorozu page", () => {
     ;(getExperts as jest.Mock).mockResolvedValue(experts)
     render(<YorozuExpertsPage />)
 
-    await waitFor(() => expect(screen.getByText("テスト専門家")).toBeInTheDocument())
-    expect(screen.getByText("チャットで相談")).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByText("山田 太郎")).toBeInTheDocument())
+    expect(screen.getByRole("link", { name: "チャットで相談" })).toHaveAttribute("href", "/chat")
+    expect(screen.getByRole("link", { name: /イマココレポートを見る/ })).toHaveAttribute("href", "/report")
+    expect(screen.getByRole("link", { name: "専門家に予約する" }).getAttribute("href")).toContain("/yorozu/experts/1/schedule")
   })
 })

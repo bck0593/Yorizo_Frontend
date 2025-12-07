@@ -1,10 +1,10 @@
 ﻿"use client"
 
-import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Loader2, Sparkles, MessageCircle, NotebookPen, Users } from "lucide-react"
 
+import { YoriCard } from "@/components/YoriCard"
 import { CompanyInfoSummaryCard } from "@/components/company/CompanyInfoSummaryCard"
 import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { getCompanyReport, type CompanyReport } from "@/lib/api"
@@ -302,36 +302,15 @@ export default function CompanyReportPage() {
           </div>
         </div>
         <div className="grid gap-2 md:grid-cols-3">
-          <Link
-            href="/chat"
-            className="rounded-2xl border border-[var(--yori-outline)] bg-white px-4 py-3 flex items-center gap-3 hover:border-[var(--yori-tertiary)] transition"
-          >
-            <MessageCircle className="h-5 w-5 text-[var(--yori-ink-strong)]" />
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">チャットを再開</p>
-              <p className="text-xs text-[var(--yori-ink-soft)]">モヤモヤを話して宿題を整理</p>
-            </div>
-          </Link>
-          <Link
+          <YoriCard variant="primaryLink" title="チャットを再開" href="/chat" icon={<MessageCircle className="h-5 w-5" />} />
+          <YoriCard
+            variant="link"
+            title="宿題を確認"
+            description="完了状況と優先度を見直す"
             href="/homework"
-            className="rounded-2xl border border-[var(--yori-outline)] bg-white px-4 py-3 flex items-center gap-3 hover:border-[var(--yori-tertiary)] transition"
-          >
-            <NotebookPen className="h-5 w-5 text-[var(--yori-ink-strong)]" />
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">宿題を確認</p>
-              <p className="text-xs text-[var(--yori-ink-soft)]">完了・優先度を見直す</p>
-            </div>
-          </Link>
-          <Link
-            href="/yorozu"
-            className="rounded-2xl border border-[var(--yori-outline)] bg-white px-4 py-3 flex items-center gap-3 hover:border-[var(--yori-tertiary)] transition"
-          >
-            <Users className="h-5 w-5 text-[var(--yori-ink-strong)]" />
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">専門家に相談</p>
-              <p className="text-xs text-[var(--yori-ink-soft)]">よろず相談ハブから予約</p>
-            </div>
-          </Link>
+            icon={<NotebookPen className="h-5 w-5" />}
+          />
+          <YoriCard variant="primaryLink" title="専門家に相談" href="/yorozu" icon={<Users className="h-5 w-5" />} />
         </div>
       </section>
 

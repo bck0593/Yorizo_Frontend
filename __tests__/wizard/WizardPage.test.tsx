@@ -15,9 +15,9 @@ describe("WizardPage", () => {
   it("moves to next question after selecting a choice", async () => {
     render(<WizardPage />)
 
-    expect(screen.getByText(/業種を教えてください/)).toBeInTheDocument()
+    expect(screen.getByText("業種を教えてください")).toBeInTheDocument()
     await userEvent.click(screen.getByRole("button", { name: "製造" }))
 
-    await waitFor(() => expect(screen.getByText(/従業員数はどのくらいですか/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText("従業員数はどのくらいですか？")).toBeInTheDocument())
   })
 })

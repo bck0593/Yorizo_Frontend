@@ -1,9 +1,10 @@
 "use client"
 
-import Link from "next/link"
 import { Suspense, useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Tag, Loader2, MessageSquare, ChevronRight } from "lucide-react"
+import { ChevronRight, LineChart, Loader2, MessageSquare, Tag, Users } from "lucide-react"
+
+import { YoriCard } from "@/components/YoriCard"
 import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { getExperts, type Expert } from "@/lib/api"
 
@@ -59,51 +60,47 @@ function YorozuExpertsPageContent() {
         <div className="flex items-start gap-3">
           <YorizoAvatar mood="expert" size="sm" />
           <div className="space-y-1">
-            <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">よろず相談</p>
+            <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">よろず相談ハブ</p>
             <p className="text-sm text-[var(--yori-ink)] leading-relaxed">
-              診断結果をもとに、ぴったりの専門家へつなぎます。オンライン・対面どちらも対応。
+              診断結果をもとに、ぴったりの専門家へつなぎます。オンライン・対面どちらも対応しています。
             </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
-            <button
+            <YoriCard
               key={filter}
-              type="button"
+              variant="choiceOptional"
+              title={filter}
+              selected={activeFilter === filter}
               onClick={() => setActiveFilter(filter)}
-              className={`yori-chip ${activeFilter === filter ? "bg-[var(--yori-secondary)] border-[var(--yori-tertiary)]" : ""}`}
-            >
-              {filter}
-            </button>
+              className="cursor-pointer"
+            />
           ))}
         </div>
       </section>
 
       <section className="grid gap-3 md:grid-cols-3">
-        <Link
+        <YoriCard
+          variant="primaryLink"
+          title="チャットで相談"
           href="/chat"
-          className="yori-card p-4 flex flex-col gap-1 border border-[var(--yori-outline)] hover:border-[var(--yori-tertiary)] transition"
-        >
-          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">チャットで相談</p>
-          <p className="text-xs text-[var(--yori-ink-soft)]">モヤモヤをすぐ話して整理する</p>
-        </Link>
-        <Link
+          icon={<MessageSquare className="h-5 w-5" />}
+        />
+        <YoriCard
+          variant="link"
+          title="イマココレポートを見る"
+          description="相談メモと宿題を 1 枚で確認"
           href="/report"
-          className="yori-card p-4 flex flex-col gap-1 border border-[var(--yori-outline)] hover:border-[var(--yori-tertiary)] transition"
-        >
-          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">イマココレポートを見る</p>
-          <p className="text-xs text-[var(--yori-ink-soft)]">相談メモと宿題を1枚で確認</p>
-        </Link>
-        <Link
+          icon={<LineChart className="h-5 w-5" />}
+        />
+        <YoriCard
+          variant="primaryLink"
+          title="専門家に予約する"
           href={primaryScheduleHref ?? "/yorozu"}
-          className="yori-card p-4 flex flex-col gap-1 border border-[var(--yori-outline)] hover:border-[var(--yori-tertiary)] transition"
-          aria-disabled={!primaryScheduleHref}
-        >
-          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">専門家に予約する</p>
-          <p className="text-xs text-[var(--yori-ink-soft)]">
-            {primaryScheduleHref ? "おすすめの専門家に進む" : "専門家情報を読み込み中"}
-          </p>
-        </Link>
+          disabled={!primaryScheduleHref}
+          icon={<Users className="h-5 w-5" />}
+        />
       </section>
 
       {isLoading && (
@@ -116,14 +113,11 @@ function YorozuExpertsPageContent() {
 
       <div className="grid md:grid-cols-2 gap-4">
         {filteredExperts.map((expert) => (
-          <div
-            key={expert.id}
-            className="yori-card p-5 space-y-3 border border-[var(--yori-outline)]"
-          >
+          <div key={expert.id} className="yori-card p-5 space-y-3 border border-[var(--yori-outline)]">
             <div className="flex items-start gap-3">
               <YorizoAvatar mood="expert" size="sm" />
-            <div className="flex-1 space-y-1">
-              <p className="text-base font-semibold text-[var(--yori-ink-strong)]">{expert.name}</p>
+              <div className="flex-1 space-y-1">
+                <p className="text-base font-semibold text-[var(--yori-ink-strong)]">{expert.name}</p>
                 {expert.organization && (
                   <p className="text-xs font-semibold text-[var(--yori-ink)]">{expert.organization}</p>
                 )}

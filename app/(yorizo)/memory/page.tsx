@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { ChevronRight, Folder, Sprout } from "lucide-react"
+import { ChevronRight, Folder, LineChart, MessageCircle, NotebookPen, Sprout } from "lucide-react"
 
+import { YoriCard } from "@/components/YoriCard"
 import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { CompanyInfoSummaryCard } from "@/components/company/CompanyInfoSummaryCard"
 import {
@@ -54,9 +55,9 @@ export default async function MemoryPage() {
   const latestConversation = formattedConversations[0]
 
   const stats = [
-    { label: "相談回数", value: `${conversations.length}件` },
+    { label: "相談数", value: `${conversations.length}件` },
     { label: "未完了の宿題", value: `${pendingHomework.length}件` },
-    { label: "保存資料", value: `${documentsCount}件` },
+    { label: "保存ドキュメント", value: `${documentsCount}件` },
   ]
 
   return (
@@ -66,33 +67,31 @@ export default async function MemoryPage() {
           <div className="flex items-start gap-3">
             <YorizoAvatar size="lg" />
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">Yorizoの記憶</p>
+              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">Yorizo の記録</p>
               <p className="text-sm text-[var(--yori-ink)] leading-relaxed">
-                これまでの相談内容や会社の情報、宿題をまとめて振り返ることができます。
+                これまでの相談内容や会社の情報、宿題をまとめて振り返れます。次に進む前に「どこまで話したか」を整理しましょう。
               </p>
             </div>
           </div>
-          <Link
-            href="/report"
-            className="btn-primary inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold"
-          >
-            企業向けレポートを見る
-            <ChevronRight className="h-4 w-4" />
-          </Link>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/chat" className="btn-primary px-4 py-2 text-sm font-semibold inline-flex items-center gap-2">
-            Yorizoと話す
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/homework"
-            className="btn-secondary px-4 py-2 text-sm font-semibold inline-flex items-center gap-2"
-          >
-            宿題を確認
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        </div>
+      </section>
+
+      <section className="grid gap-3 md:grid-cols-3">
+        <YoriCard variant="primaryLink" title="チャットを再開する" href="/chat" icon={<MessageCircle className="h-5 w-5" />} />
+        <YoriCard
+          variant="link"
+          title="宿題を確認"
+          description="未完了タスクをチェックして次の一歩を決める"
+          href="/homework"
+          icon={<NotebookPen className="h-5 w-5" />}
+        />
+        <YoriCard
+          variant="link"
+          title="イマココレポート"
+          description="診断と相談メモをまとめて俯瞰"
+          href="/report"
+          icon={<LineChart className="h-5 w-5" />}
+        />
       </section>
 
       <section className="grid md:grid-cols-3 gap-3">
@@ -112,46 +111,58 @@ export default async function MemoryPage() {
           <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">最新の診断</p>
         </div>
         {!latestConversation && (
-          <p className="text-sm text-[var(--yori-ink-soft)]">まだ診断はありません。まずはYorizoと話してみましょう。</p>
+          <YoriCard
+            variant="info"
+            title="まだ診断がありません"
+            description="まずは Yorizo と話して、相談メモを作成しましょう。"
+          />
         )}
         {latestConversation && (
-          <div className="yori-card bg-[var(--yori-surface-muted)] p-4 space-y-2">
-            <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">{latestConversation.title}</p>
-            <p className="text-xs text-[var(--yori-ink-soft)]">{latestConversation.dateLabel}</p>
-            <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+          <YoriCard
+            variant="info"
+            title={latestConversation.title}
+            description={latestConversation.dateLabel || "最新の相談"}
+            icon={<LineChart className="h-5 w-5" />}
+          >
+            <p className="text-xs text-[var(--yori-ink-soft)]">相談メモと宿題のまとめを開きます。</p>
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Link
+                href={`/chat?conversationId=${latestConversation.id}`}
+                className="btn-ghost inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold md:text-sm"
+              >
+                チャットを開く
+                <ChevronRight className="h-4 w-4" />
+              </Link>
               <Link
                 href={`/report/${latestConversation.id}`}
-                className="btn-secondary inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold md:text-base flex-shrink-0 whitespace-nowrap"
+                className="btn-secondary inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold md:text-sm"
               >
                 レポートを見る
                 <ChevronRight className="h-4 w-4" />
               </Link>
-              <Link
-                href={`/chat?conversationId=${latestConversation.id}`}
-                className="btn-ghost inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold md:text-base flex-shrink-0 whitespace-nowrap"
-              >
-                チャットを開く
-              </Link>
             </div>
-          </div>
+          </YoriCard>
         )}
       </section>
 
       <section className="yori-card p-5 space-y-3">
         <div className="flex items-center gap-2">
           <Folder className="h-5 w-5 text-[var(--yori-ink-strong)]" />
-          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">会社の資料</p>
+          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">会社のドキュメント</p>
         </div>
         <p className="text-sm text-[var(--yori-ink)]">保存済み: {documentsCount}件</p>
-        <Link href="/documents" className="btn-ghost px-4 py-2 text-sm font-semibold inline-flex items-center gap-2">
-          資料を管理する
-          <ChevronRight className="h-4 w-4" />
-        </Link>
+        <YoriCard
+          variant="link"
+          title="ドキュメントを管理する"
+          description="決算書や試算表などをアップロードできます。"
+          href="/documents"
+          icon={<Folder className="h-5 w-5" />}
+        />
       </section>
 
       <section className="yori-card p-5 space-y-3">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">これまで相談したこと（最新5件）</p>
+          <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">これまで相談したこと（最新 5 件）</p>
         </div>
         <div className="space-y-1">
           {!formattedConversations.length && (

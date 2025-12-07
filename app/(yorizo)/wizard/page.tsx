@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, CheckCircle2, Sparkles } from "lucide-react"
-import clsx from "clsx"
 
+import { YoriCard } from "@/components/YoriCard"
 import { VoiceInputControls } from "@/components/voice/VoiceInputControls"
 import { YorizoAvatar } from "@/components/YorizoAvatar"
 
@@ -278,19 +278,14 @@ export default function WizardPage() {
             {current.options?.map((option) => {
               const selected = answers[current.id] === option
               return (
-                <button
+                <YoriCard
                   key={option}
-                  type="button"
+                  variant="choiceRequired"
+                  title={option}
+                  selected={selected}
                   onClick={() => handleAnswer(option)}
-                  className={clsx(
-                    "rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-colors",
-                    selected
-                      ? "border-[var(--yori-ink-strong)] bg-[var(--yori-secondary)]"
-                      : "border-[var(--yori-outline)] bg-white hover:border-[var(--yori-tertiary)]",
-                  )}
-                >
-                  {option}
-                </button>
+                  className="w-full"
+                />
               )
             })}
           </div>
@@ -302,19 +297,14 @@ export default function WizardPage() {
               const value = `${idx + 1}:${label}`
               const selected = answers[current.id] === value
               return (
-                <button
+                <YoriCard
                   key={label}
-                  type="button"
+                  variant="choiceRequired"
+                  title={label}
+                  selected={selected}
                   onClick={() => handleAnswer(value)}
-                  className={clsx(
-                    "w-full rounded-2xl border px-4 py-3 text-left text-sm transition-colors",
-                    selected
-                      ? "border-[var(--yori-ink-strong)] bg-[var(--yori-secondary)]"
-                      : "border-[var(--yori-outline)] bg-white hover:border-[var(--yori-tertiary)]",
-                  )}
-                >
-                  <span className="font-semibold text-[var(--yori-ink-strong)]">{label}</span>
-                </button>
+                  className="w-full"
+                />
               )
             })}
           </div>

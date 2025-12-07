@@ -22,10 +22,10 @@ jest.mock("next/navigation", () => ({
 }))
 
 const mockReport: CompanyReport = {
-  company: { id: "1", name: "デモ株式会社" },
+  company: { id: "1", name: "Sample Company" },
   radar: { axes: ["売上持続性"], periods: [{ label: "最新", scores: [3], raw_values: [100] }] },
   qualitative: { keieisha: {}, jigyo: {}, kankyo: {}, naibu: {} },
-  current_state: "テスト状態",
+  current_state: "現状メモ",
   future_goal: "",
   action_plan: "",
   snapshot_strengths: [],
@@ -36,12 +36,15 @@ const mockReport: CompanyReport = {
 }
 
 describe("CompanyReportPage", () => {
-  it("renders action links and report shell", async () => {
+  it("renders main action cards and fetches report", async () => {
     ;(getCompanyReport as jest.Mock).mockResolvedValue(mockReport)
     render(<CompanyReportPage />)
 
     await waitFor(() => expect(getCompanyReport).toHaveBeenCalled())
-    expect(screen.getByText("チャットを再開")).toBeInTheDocument()
+
     expect(screen.getByText("イマココレポート")).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "チャットを再開" })).toHaveAttribute("href", "/chat")
+    expect(screen.getByRole("link", { name: /宿題を確認/ })).toHaveAttribute("href", "/homework")
+    expect(screen.getByRole("link", { name: "専門家に相談" })).toHaveAttribute("href", "/yorozu")
   })
 })
