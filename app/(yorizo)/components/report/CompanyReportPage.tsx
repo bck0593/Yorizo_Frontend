@@ -2,9 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, Sparkles } from "lucide-react"
+import { ArrowLeft, Loader2, Sparkles, MessageCircle, NotebookPen, Users } from "lucide-react"
 
+import { YoriCard } from "@/components/YoriCard"
 import { CompanyInfoSummaryCard } from "@/components/company/CompanyInfoSummaryCard"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
+import { ThinkingRow } from "@/components/ThinkingRow"
 import { getCompanyReport, type CompanyReport } from "@/lib/api"
 import { useCompanyProfile } from "@/lib/hooks/useCompanyProfile"
 
@@ -291,9 +294,8 @@ export default function CompanyReportPage() {
 
       {error && <p className="text-sm text-rose-500">{error}</p>}
       {loading && (
-        <div className="yori-card p-5 text-sm text-[var(--yori-ink-soft)] flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          レポートを生成中です…
+        <div className="yori-card p-5">
+          <ThinkingRow text="レポートを生成中です…" className="text-sm" />
         </div>
       )}
 

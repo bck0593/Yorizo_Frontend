@@ -62,6 +62,41 @@ describe("ChatClient", () => {
     expect(screen.getByText("次に気になっていることを教えてください。")).toBeInTheDocument()
   })
 
+  it("shows thinking row with spinner and mascot while waiting for a reply", async () => {
+    let resolveTurn: ((value: any) => void) | null = null
+    mockedGuidedChatTurn.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveTurn = resolve
+        }),
+    )
+
+    const user = userEvent.setup()
+    render(<ChatClient topic="sales" initialConversationId={null} />)
+
+    await user.type(screen.getByPlaceholderText("ご相談内容を入力してください"), "進行テスト")
+    await user.click(screen.getByRole("button", { name: "送信" }))
+
+    const thinkingRow = await screen.findByRole("status", { name: /yorizoが考えています/ })
+    const image = thinkingRow.querySelector('img[aria-hidden="true"]')
+    expect(image).toBeTruthy()
+    const spinnerClass = thinkingRow.querySelector("svg")?.getAttribute("class") ?? ""
+    expect(spinnerClass).toContain("animate-spin")
+
+    resolveTurn?.({
+      conversation_id: "c-thinking",
+      reply: "このあと改善案をまとめます。",
+      question: "",
+      options: [],
+      cta_buttons: [],
+      allow_free_text: true,
+      step: 2,
+      done: false,
+    })
+
+    await waitFor(() => expect(screen.getByText("このあと改善案をまとめます。")).toBeInTheDocument())
+  })
+
   it("shows fallback message when the chat API fails", async () => {
     mockedGuidedChatTurn.mockRejectedValue(new ApiError(LLM_FALLBACK_MESSAGE))
 

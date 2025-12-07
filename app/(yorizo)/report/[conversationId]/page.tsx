@@ -10,11 +10,11 @@ import {
   ClipboardList,
   FileText,
   FolderOpen,
-  Loader2,
   RefreshCcw,
   Save,
 } from "lucide-react"
 
+import { ThinkingRow } from "@/components/ThinkingRow"
 import {
   getConversationDetail,
   getConversationReport,
@@ -263,10 +263,7 @@ export default function ConsultationMemoPage() {
       </div>
 
       {loading && (
-        <div className="flex items-center gap-2 text-sm text-[var(--yori-ink-soft)]">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span>相談メモを読み込み中です…</span>
-        </div>
+        <ThinkingRow text="相談メモを読み込み中です…" className="text-sm" />
       )}
 
       {error && <p className="text-xs text-rose-600">{error}</p>}
@@ -376,10 +373,7 @@ export default function ConsultationMemoPage() {
                 <p className="text-xs text-[var(--yori-ink-soft)]">Yorizoにアップロード済みの資料を選択できます。相談相手に見せたい資料をチェックしてください。</p>
               </div>
               {documentsLoading && (
-                <div className="flex items-center gap-2 text-xs text-[var(--yori-ink-soft)]">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>資料を読み込み中...</span>
-                </div>
+                <ThinkingRow text="資料を読み込み中..." className="text-xs" gap="compact" />
               )}
               {documentsError && <p className="text-xs text-rose-600">{documentsError}</p>}
               {!documentsLoading && documents.length === 0 && (
