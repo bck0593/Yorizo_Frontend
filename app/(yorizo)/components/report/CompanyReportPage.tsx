@@ -33,16 +33,22 @@ function buildPoints(scores: number[], size = 280): string {
   return pts.map((p) => `${p.x},${p.y}`).join(" ")
 }
 
-function RadarChart({ periods }: { periods: CompanyReport["radar"]["periods"] }) {
-  if (!periods?.length) return null
+function RadarChart({ periods, axes }: { periods: CompanyReport["radar"]["periods"]; axes: string[] }) {
+  if (!periods?.length) {
+    return (
+      <div className="rounded-xl border border-[var(--yori-outline)] bg-white p-4 text-sm text-[var(--yori-ink-soft)]">
+        まだ決算書が登録されていないため、レーダーチャートを表示できません。
+      </div>
+    )
+  }
   const size = 320
   const center = size / 2
   const radius = center - 24
   const levels = [1, 2, 3, 4, 5]
-  const angleStep = (2 * Math.PI) / RADAR_AXES.length
+  const angleStep = (2 * Math.PI) / axes.length
 
   const gridPolygons = levels.map((level) => {
-    const points = RADAR_AXES.map((_, idx) => {
+    const points = axes.map((_, idx) => {
       const r = (level / 5) * radius
       const angle = -Math.PI / 2 + idx * angleStep
       const x = center + r * Math.cos(angle)
@@ -58,7 +64,7 @@ function RadarChart({ periods }: { periods: CompanyReport["radar"]["periods"] })
         {gridPolygons.map((pts, idx) => (
           <polygon key={`grid-${idx}`} points={pts} />
         ))}
-        {RADAR_AXES.map((_, idx) => {
+        {axes.map((_, idx) => {
           const angle = -Math.PI / 2 + idx * angleStep
           return (
             <line
@@ -83,7 +89,7 @@ function RadarChart({ periods }: { periods: CompanyReport["radar"]["periods"] })
           strokeDasharray={idx === 0 ? "0" : "6 4"}
         />
       ))}
-      {RADAR_AXES.map((label, idx) => {
+      {axes.map((label, idx) => {
         const angle = -Math.PI / 2 + idx * angleStep
         const labelRadius = radius + 16
         const x = center + labelRadius * Math.cos(angle)
@@ -98,8 +104,14 @@ function RadarChart({ periods }: { periods: CompanyReport["radar"]["periods"] })
   )
 }
 
-function ValueTable({ periods }: { periods: CompanyReport["radar"]["periods"] }) {
-  if (!periods?.length) return null
+function ValueTable({ periods, axes }: { periods: CompanyReport["radar"]["periods"]; axes: string[] }) {
+  if (!periods?.length) {
+    return (
+      <div className="rounded-xl border border-[var(--yori-outline)] bg-white p-4 text-sm text-[var(--yori-ink-soft)]">
+        まだ決算書が登録されていないため、イマココレポートを表示できません。
+      </div>
+    )
+  }
   return (
     <div className="overflow-auto rounded-xl border border-[var(--yori-outline)] bg-white">
       <table className="min-w-full text-sm">
@@ -114,14 +126,14 @@ function ValueTable({ periods }: { periods: CompanyReport["radar"]["periods"] })
           </tr>
         </thead>
         <tbody>
-          {RADAR_AXES.map((axis, rowIdx) => (
+          {axes.map((axis, rowIdx) => (
             <tr key={axis} className="border-t border-[var(--yori-outline)]">
               <td className="px-3 py-2 font-semibold text-[var(--yori-ink-strong)]">{axis}</td>
               {periods.map((p) => (
                 <td key={`${axis}-${p.label}`} className="px-3 py-2 text-[var(--yori-ink)]">
                   {p.raw_values?.[rowIdx] !== undefined && p.raw_values?.[rowIdx] !== null
                     ? p.raw_values[rowIdx]?.toLocaleString("ja-JP")
-                    : "-"}
+                    : "データなし"}
                 </td>
               ))}
             </tr>
@@ -264,7 +276,11 @@ export default function CompanyReportPage() {
     void fetchReport()
   }, [])
 
+  const axes = report?.radar?.axes?.length ? report.radar.axes : RADAR_AXES
   const periods = useMemo(() => report?.radar?.periods ?? [], [report])
+  const isNoRadarData =
+    !periods.length ||
+    periods.every((p) => !p.raw_values || p.raw_values.every((v) => v === null || v === undefined))
   const snapshotStrengths = report?.snapshot_strengths ?? []
   const snapshotWeaknesses = report?.snapshot_weaknesses ?? []
   const thinkingQuestions = report?.thinking_questions ?? []
@@ -302,23 +318,29 @@ export default function CompanyReportPage() {
       {report && (
         <>
           <section className="yori-card p-5 md:p-6 space-y-4">
-            <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-              <RadarChart periods={periods} />
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 text-sm text-[var(--yori-ink)]">
-                  <span className="inline-flex items-center gap-1 text-[var(--yori-ink-strong)]">
-                    <span className="h-2 w-4 rounded-full bg-[#f97316]" /> 最新決算期
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[var(--yori-ink-strong)]">
-                    <span className="h-2 w-4 rounded-full border border-[#3b82f6] bg-transparent" /> 前期決算期
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[var(--yori-ink-strong)]">
-                    <span className="h-2 w-4 rounded-full border border-[#6b7280] bg-transparent" /> 前々期決算期
-                  </span>
-                </div>
-                <ValueTable periods={periods} />
+            {isNoRadarData ? (
+              <div className="rounded-xl border border-[var(--yori-outline)] bg-white p-4 text-sm text-[var(--yori-ink-soft)]">
+                決算書のデータが不足しているため、レーダーチャートを表示できません。
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+                <RadarChart periods={periods} axes={axes} />
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 text-sm text-[var(--yori-ink)]">
+                    <span className="inline-flex items-center gap-1 text-[var(--yori-ink-strong)]">
+                      <span className="h-2 w-4 rounded-full bg-[#f97316]" /> 最新決算期
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[var(--yori-ink-strong)]">
+                      <span className="h-2 w-4 rounded-full border border-[#3b82f6] bg-transparent" /> 前期決算期
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[var(--yori-ink-strong)]">
+                      <span className="h-2 w-4 rounded-full border border-[#6b7280] bg-transparent" /> 前々期決算期
+                    </span>
+                  </div>
+                  <ValueTable periods={periods} axes={axes} />
+                </div>
+              </div>
+            )}
           </section>
 
           <CompanyInfoSummaryCard profile={profile} company={report.company} loading={loadingProfile} onEdit={() => router.push("/company")} />

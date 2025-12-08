@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, ChangeEvent, FormEvent } from "react"
 import { BarChart2, ClipboardList, FileQuestion, FileText, Loader2, Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import {
+  deleteDocument,
   listDocuments,
   uploadDocument,
   type DocumentItem,
@@ -57,7 +58,14 @@ export default function DocumentsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [docType, setDocType] = useState<DocumentType>("financial_statement")
   const [periodLabel, setPeriodLabel] = useState("")
+  const [fiscalYear, setFiscalYear] = useState("")
   const [filter, setFilter] = useState<FilterType>("all")
+
+  useEffect(() => {
+    if (docType !== "financial_statement") {
+      setFiscalYear("")
+    }
+  }, [docType])
 
   useEffect(() => {
     const fetchDocs = async () => {
@@ -89,9 +97,19 @@ export default function DocumentsPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!selectedFile || !periodLabel.trim()) {
+    const trimmedPeriod = periodLabel.trim()
+    if (!selectedFile || !trimmedPeriod) {
       setError("資料の種類と対象期間、ファイルを入力してください。")
       return
+    }
+    let fiscalYearValue: number | undefined
+    if (docType === "financial_statement") {
+      const parsed = Number(fiscalYear.trim())
+      if (!Number.isInteger(parsed) || parsed < 1900 || parsed > 2100) {
+        setError("対象期間（西暦4桁）を入力してください。例: 2024")
+        return
+      }
+      fiscalYearValue = parsed
     }
     setUploading(true)
     setError(null)
@@ -100,12 +118,15 @@ export default function DocumentsPage() {
       const payload: UploadDocumentPayload = {
         file: selectedFile,
         doc_type: docType,
-        period_label: periodLabel.trim(),
+        period_label: trimmedPeriod,
         user_id: "demo-user",
+        company_id: "1",
+        fiscal_year: fiscalYearValue,
       }
       const result = await uploadDocument(payload)
       setSuccess("資料をアップロードしました。")
       setPeriodLabel("")
+      setFiscalYear("")
       setSelectedFile(null)
       setDocuments((prev) => [
         {
@@ -179,6 +200,22 @@ export default function DocumentsPage() {
                 className="w-full rounded-2xl border border-[var(--yori-outline)] bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--yori-tertiary)]"
               />
             </div>
+            {docType === "financial_statement" && (
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-[var(--yori-ink-strong)]">
+                  対象年度（西暦4桁）<span className="text-rose-600 ml-1 text-[10px]">必須</span>
+                </label>
+                <input
+                  value={fiscalYear}
+                  onChange={(e) => setFiscalYear(e.target.value)}
+                  placeholder="例: 2024"
+                  inputMode="numeric"
+                  pattern="\d*"
+                  className="w-full rounded-2xl border border-[var(--yori-outline)] bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--yori-tertiary)]"
+                />
+                <p className="text-[11px] text-[var(--yori-ink-soft)]">決算書の場合は必ず西暦で入力してください。</p>
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <label className="text-xs font-semibold text-[var(--yori-ink-strong)]">ファイル</label>
@@ -262,6 +299,9 @@ export default function DocumentsPage() {
                       <span className="text-[11px] text-[var(--yori-ink-soft)]">
                         {(doc.doc_type && DOC_TYPE_LABELS[doc.doc_type as DocumentType]) || "資料"}・{formatDate(doc.uploaded_at)}
                       </span>
+                      {doc.fiscal_year ? (
+                        <span className="text-[11px] text-[var(--yori-ink-soft)]">対象年度: {doc.fiscal_year}</span>
+                      ) : null}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -271,6 +311,21 @@ export default function DocumentsPage() {
                       className="btn-ghost text-xs px-3 py-2"
                     >
                       ダウンロード
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await deleteDocument(doc.id)
+                          setDocuments((prev) => prev.filter((d) => d.id !== doc.id))
+                        } catch (err) {
+                          console.error(err)
+                          setError("削除に失敗しました。")
+                        }
+                      }}
+                      className="text-xs text-rose-600 hover:underline px-2 py-1"
+                    >
+                      削除
                     </button>
                   </div>
                 </div>
