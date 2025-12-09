@@ -76,25 +76,6 @@ describe("lib/api high-level wrappers", () => {
     expect(global.fetch).toHaveBeenCalledTimes(1)
   })
 
-  it("chatTurn preserves cta_buttons when present", async () => {
-    const payload: ChatTurnResponse = {
-      conversation_id: "c1",
-      reply: "reply text",
-      question: "",
-      options: [],
-      cta_buttons: [{ id: "hw", label: "宿題を作成する", action: "open_homework" }],
-      allow_free_text: true,
-      step: 1,
-      done: false,
-    }
-    mockFetchJson(payload)
-
-    const result = await chatTurn({ message: "hello" })
-
-    // cta_buttons was removed from the API contract; this test now only checks that the call succeeds.
-    expect(result.conversation_id).toBe("c1")
-  })
-
   it("guidedChatTurn calls /api/chat/guided and returns response", async () => {
     const payload: ChatTurnResponse = {
       conversation_id: "c2",
