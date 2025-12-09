@@ -64,7 +64,6 @@ describe("lib/api high-level wrappers", () => {
       reply: "reply text",
       question: "question text",
       options: [],
-      cta_buttons: [],
       allow_free_text: true,
       step: 1,
       done: false,
@@ -92,7 +91,8 @@ describe("lib/api high-level wrappers", () => {
 
     const result = await chatTurn({ message: "hello" })
 
-    expect(result.cta_buttons?.[0]?.id).toBe("hw")
+    // cta_buttons was removed from the API contract; this test now only checks that the call succeeds.
+    expect(result.conversation_id).toBe("c1")
   })
 
   it("guidedChatTurn calls /api/chat/guided and returns response", async () => {
@@ -101,7 +101,6 @@ describe("lib/api high-level wrappers", () => {
       reply: "guided reply",
       question: "guided question",
       options: [],
-      cta_buttons: [],
       allow_free_text: true,
       step: 2,
       done: false,
