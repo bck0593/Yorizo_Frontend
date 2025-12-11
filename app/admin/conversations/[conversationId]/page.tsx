@@ -80,31 +80,16 @@ function MessageCard({ role, content, createdAt }: MessageCardProps) {
             </div>
           </div>
         )}
-          <div className="space-y-1 mt-2">
-            <p className="text-xs text-slate-500">アクション</p>
-            <div className="flex flex-wrap gap-2">
-              {/* Admin-visible only: keep CTA buttons for LLM output inspection; end-user /chat UI does not render them. */}
-                <span
-                  key={cta.id}
-                  className="inline-flex items-center rounded-full bg-[#13274B]/10 text-[#13274B] px-3 py-1 text-[12px] border border-[#13274B]/30"
-                >
-                  {cta.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     )
   }
 
   return (
     <div
-      className={`rounded-2xl border px-3 py-2 text-sm leading-relaxed ${
-        role === "user"
-          ? "bg-[#13274B]/5 border-[#13274B]/20 text-slate-900"
-          : "bg-white border-slate-200 text-slate-800"
-      }`}
+      className={`rounded-2xl border px-3 py-2 text-sm leading-relaxed ${role === "user"
+        ? "bg-[#13274B]/5 border-[#13274B]/20 text-slate-900"
+        : "bg-white border-slate-200 text-slate-800"
+        }`}
     >
       <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
         <span className="font-semibold">{label}</span>
@@ -186,7 +171,6 @@ export default function AdminConversationPage() {
                 ))}
               </div>
             </div>
-
           </div>
         )}
       </div>
