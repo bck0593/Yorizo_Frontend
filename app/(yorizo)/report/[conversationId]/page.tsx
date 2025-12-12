@@ -326,7 +326,7 @@ export default function ConsultationMemoPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[var(--yori-ink)]">まだ宿題の登録がありません。チャットの中で決まった取り組みがここに表示されます。</p>
+              <p className="text-sm text-[var(--yori-ink)]">まだToDoの登録がありません。チャットの中で決まった取り組みがここに表示されます。</p>
             )}
           </section>
 

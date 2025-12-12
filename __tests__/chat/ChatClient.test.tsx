@@ -128,6 +128,6 @@ describe("ChatClient", () => {
     await waitFor(() => {
       expect(screen.getByText("CTA is kept in the API response only.")).toBeInTheDocument()
     })
-    expect(screen.queryByRole("button", { name: /宿題を作成する/ })).toBeNull()
+    expect(screen.queryByRole("button", { name: /ToDoを作成する/ })).toBeNull()
   })
 })
