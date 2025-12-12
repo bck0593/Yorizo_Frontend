@@ -124,7 +124,7 @@ export function YoriCard({
       href={href}
       onClick={onClick}
       type={Component === "button" ? "button" : undefined}
-      className={clsx(variantClasses, padding, className, disabled && "opacity-60 pointer-events-none")}
+      className={clsx("block", variantClasses, padding, className, disabled && "opacity-60 pointer-events-none")}
       data-variant={variant}
       data-selected={selected ? "true" : "false"}
       aria-pressed={isChoice ? selected : undefined}
