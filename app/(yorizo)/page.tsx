@@ -1,8 +1,9 @@
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
 import { CheckSquare, FileText, LineChart, MessageCircle } from "lucide-react"
 
 import { YoriCard } from "@/components/YoriCard"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { UseGuideAccordion } from "./components/UseGuideAccordion"
 import { getConversations, type ConversationSummary } from "@/lib/api"
 
@@ -24,21 +25,26 @@ export default async function HomePage() {
   const pastConversationLink = memoLink ?? "/memory"
 
   return (
-    <div className="flex flex-col gap-6 md:gap-8 py-4 pb-24">
-      <section className="yori-card-muted p-5 md:p-6 space-y-2">
-        <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">今日はどんな気分？</p>
-        <p className="text-sm text-[var(--yori-ink)] leading-relaxed">
-          小さなモヤモヤもそのまま話してOKです。気軽に一言から始めてみましょう。
-        </p>
+    <div className="flex flex-col gap-6 md:gap-8 py-4 pb-4">
+      <section className="yori-card-muted p-5 md:p-6">
+        <div className="flex items-start gap-4">
+          <YorizoAvatar mood="thinking" size="lg" className="shrink-0" />
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">今日はどんな気分？</p>
+            <p className="text-sm text-[var(--yori-ink)] leading-relaxed">
+              小さなモヤモヤもそのまま話してOKです。気軽に一言から始めてみましょう。
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="yori-card p-5 md:p-6 space-y-3">
         <YoriCard
           variant="primaryLink"
-          title="Yorizoとchatで話す"
+          title="Yorizoとチャットで話す"
           href="/chat?reset=true"
           icon={<MessageCircle className="h-5 w-5" />}
-          className="w-full"
+          className="block w-full"
         />
         <div className="flex justify-end">
           <Link
@@ -54,26 +60,28 @@ export default async function HomePage() {
         <YoriCard
           variant="link"
           title="to doを確認"
-          description="未完了タスクをチェック。"
+          description="未完了タスクをチェック"
           href="/homework"
           icon={<CheckSquare className="h-5 w-5" />}
         />
         <YoriCard
           variant="link"
           title="イマココレポートを見る"
-          description="会社の「いま」をまとめたレポート。"
+          description="会社の「いま」をまとめたレポート"
           href="/report"
           icon={<LineChart className="h-5 w-5" />}
         />
         <YoriCard
           variant="link"
           title="相談メモを開く"
-          description="よろず相談窓口や専門家にそのまま渡せるメモ。現状把握にも。"
+          description="最新の相談メモやレポートを開きます"
           href={memoLink ?? "/memory"}
           icon={<FileText className="h-5 w-5" />}
         >
           {!memoLink && (
-            <p className="text-xs text-[var(--yori-ink-soft)]">まだ会話がありません。まずは Yorizo と話してみましょう。</p>
+            <p className="text-xs text-[var(--yori-ink-soft)]">
+              まだ会話がありません。まずは Yorizo と話してみましょう。
+            </p>
           )}
         </YoriCard>
       </section>

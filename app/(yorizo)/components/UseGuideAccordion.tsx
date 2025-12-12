@@ -15,7 +15,7 @@ const STEP_ITEMS = [
   },
   {
     title: "イマココレポート",
-    description: "チャット・宿題をまとめて俯瞰し、次の一歩を確認。",
+    description: "これまでのチャットとデータをまとめて俯瞰し、次の一歩を確認。",
   },
   {
     title: "相談メモ",
@@ -66,7 +66,7 @@ export function UseGuideAccordion() {
                 Yorizoと話して「いま」を見直し、次の一歩へ
               </h2>
               <p className="text-sm text-[var(--yori-ink)] leading-relaxed">
-                話す → イマココレポートで俯瞰 → 相談メモで人に渡せる形にまとめる。3 ステップで頭と気持ちを整える使い方を前提にする。
+                話す → イマココレポートで俯瞰 → 相談メモで人に渡せる形にまとめる。3 ステップで頭と気持ちを整える。
               </p>
             </div>
           </div>
@@ -83,18 +83,6 @@ export function UseGuideAccordion() {
                 {index < STEP_ITEMS.length - 1 && <StepConnector />}
               </Fragment>
             ))}
-          </div>
-
-          <div className="yori-card p-4 space-y-3">
-            <div className="flex items-center gap-2">
-              <NotebookPen className="h-5 w-5 text-[var(--yori-ink-strong)]" />
-              <p className="text-sm font-semibold text-[var(--yori-ink-strong)]">3 ステップで頭と気持ちを整える</p>
-            </div>
-            <ol className="list-decimal space-y-2 pl-5 text-sm text-[var(--yori-ink)] leading-relaxed">
-              <li>チャットでモヤモヤを言語化する。</li>
-              <li>イマココレポートで数値と定性を俯瞰する。</li>
-              <li>相談メモで「人に渡せる台本」に仕上げる。</li>
-            </ol>
           </div>
         </div>
       )}
