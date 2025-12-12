@@ -22,6 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Azure Login (for app settings)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Detect app dir
         id: appdir
         shell: bash
@@ -65,7 +70,7 @@ jobs:
         uses: azure/appservice-settings@v1
         with:
           app-name: 'yorizo-app-frontend'
-          publish-profile: ${{ secrets.PUBLISH_PROFILE_YORIZO_FRONTEND_MAIN }}
+          slot-name: 'production'
           app-settings-json: |
             [
               { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" },
@@ -73,6 +78,7 @@ jobs:
               { "name": "WEBSITE_RUN_FROM_PACKAGE", "value": "1" },
               { "name": "WEBSITES_CONTAINER_START_TIME_LIMIT", "value": "600" }
             ]
+          mask-inputs: true
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
