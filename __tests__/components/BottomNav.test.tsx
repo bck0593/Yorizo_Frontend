@@ -7,11 +7,12 @@ jest.mock("next/navigation", () => ({
 }))
 
 describe("BottomNav", () => {
-  it("renders tabs for main routes", () => {
+  it("renders 4 tabs for main routes", () => {
     render(<BottomNav />)
-    const labels = ["ホーム", "よろず相談", "Yorizoの記憶", "ToDo", "イマココ"]
-    labels.forEach((label) => {
-      expect(screen.getByText(label)).toBeInTheDocument()
-    })
+
+    expect(screen.getByText("ホーム")).toBeInTheDocument()
+    expect(screen.getByText("チャット")).toBeInTheDocument()
+    expect(screen.getByText("イマココ")).toBeInTheDocument()
+    expect(screen.getByText("相談予約")).toBeInTheDocument()
   })
 })

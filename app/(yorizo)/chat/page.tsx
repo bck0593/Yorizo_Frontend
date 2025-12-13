@@ -18,7 +18,7 @@ function ChatPageContent({ searchParams }: PageProps) {
 
 export default function ChatPage(props: PageProps) {
   return (
-    <Suspense fallback={<ThinkingRow text="チャットを読み込み中..." className="p-4" />}>
+    <Suspense fallback={<ThinkingRow text="チャット画面を読み込んでいます..." className="p-4" />}>
       <ChatPageContent {...props} />
     </Suspense>
   )

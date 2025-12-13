@@ -31,15 +31,13 @@ export function YorizoAvatar({ mood = "basic", size = "md", alt = "Yorizo", clas
   const src = moodSrc[mood] ?? moodSrc.basic
 
   return (
-    <div
-      className={clsx(
-        "flex items-center justify-center rounded-full bg-[var(--yori-secondary)] border border-[var(--yori-outline)] shadow-sm overflow-hidden",
-        className,
-      )}
+    <Image
+      src={src}
+      alt={alt}
+      width={dimension}
+      height={dimension}
       style={{ width: dimension, height: dimension }}
-      aria-label={alt}
-    >
-      <Image src={src} alt={alt} width={dimension} height={dimension} className="h-full w-full object-contain" />
-    </div>
+      className={clsx("object-contain", className)}
+    />
   )
 }
