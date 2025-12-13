@@ -59,7 +59,7 @@ export default async function HomePage() {
       <section className="grid gap-3 md:grid-cols-3">
         <YoriCard
           variant="link"
-          title="To Doを確認"
+          title="ToDoを確認"
           description="未完了タスクをチェック"
           href="/homework"
           icon={<CheckSquare className="h-5 w-5" />}

@@ -22,7 +22,7 @@ describe("HomePage", () => {
     expect(screen.getByRole("link", { name: "Yorizoとchatで話す" })).toHaveAttribute("href", "/chat?reset=true")
     expect(screen.getByRole("link", { name: "過去の会話はこちら→" }).getAttribute("href")).toContain("/report/conv-1")
 
-    expect(screen.getByRole("link", { name: /To Doを確認/ })).toHaveAttribute("href", "/homework")
+    expect(screen.getByRole("link", { name: /ToDoを確認/ })).toHaveAttribute("href", "/homework")
     expect(screen.getByRole("link", { name: /イマココレポートを見る/ })).toHaveAttribute("href", "/report")
     expect(screen.getByRole("link", { name: /相談メモを開く/ }).getAttribute("href")).toContain("/report/conv-1")
   })
