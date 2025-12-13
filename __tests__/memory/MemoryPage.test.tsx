@@ -25,7 +25,7 @@ jest.mock("next/navigation", () => ({
 describe("MemoryPage", () => {
   it("renders navigation cards for chat, homework, report, and memo", async () => {
     ;(getConversations as jest.Mock).mockResolvedValue([
-      { id: "c1", title: "相談1", date: "2024-01-01" },
+      { id: "c1", title: "相談のタイトル", date: "2024-01-01" },
     ])
     ;(listHomework as jest.Mock).mockResolvedValue([])
     ;(listDocuments as jest.Mock).mockResolvedValue([])

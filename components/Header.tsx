@@ -36,9 +36,9 @@ export function Header({ title, showBackButton }: HeaderProps) {
               <Image
                 src="/logos/YorizoLogo.png"
                 alt="Yorizo"
-                width={249}
-                height={73}
-                className="h-6 w-auto origin-top-left scale-90 transition-opacity"
+                width={271}
+                height={82}
+                className="h-6 w-auto max-w-[80px] origin-top-left transition-opacity"
                 priority
               />
               {title && <span className="text-[11px] text-[var(--yori-ink-soft)]">{title}</span>}

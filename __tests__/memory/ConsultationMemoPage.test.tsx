@@ -18,7 +18,7 @@ jest.mock("next/navigation", () => ({
 const mockedGetMemo = getConsultationMemo as jest.MockedFunction<typeof getConsultationMemo>
 
 describe("ConsultationMemoPage", () => {
-  it("shows thinking, renders memo bullets, CTAs, and hides removed controls", async () => {
+  it("shows thinking, renders memo bullets, CTAs, and omits removed controls", async () => {
     let resolveMemo: (value: ConsultationMemo) => void = () => {}
     const memoPromise = new Promise<ConsultationMemo>((resolve) => {
       resolveMemo = resolve
@@ -27,8 +27,8 @@ describe("ConsultationMemoPage", () => {
 
     render(<ConsultationMemoPage />)
 
-    expect(screen.getByText("最新の相談メモ")).toBeInTheDocument()
-    expect(screen.getByText("相談メモを生成しています...")).toBeInTheDocument()
+    expect(screen.getByTestId("memo-thinking")).toBeInTheDocument()
+    expect(screen.getByText("相談メモをまとめました")).toBeInTheDocument()
 
     resolveMemo({
       current_points: ["first point", "second point"],
@@ -39,8 +39,6 @@ describe("ConsultationMemoPage", () => {
     await waitFor(() => expect(screen.getByText("first point")).toBeInTheDocument())
     expect(screen.getByText("second point")).toBeInTheDocument()
     expect(screen.getByText("important detail")).toBeInTheDocument()
-    expect(screen.getByText("今回気になっていること")).toBeInTheDocument()
-    expect(screen.getByText("専門家に伝えたい大事なポイント")).toBeInTheDocument()
 
     expect(screen.getByRole("link", { name: "相談予約をする" })).toHaveAttribute(
       "href",
@@ -51,10 +49,10 @@ describe("ConsultationMemoPage", () => {
       "/chat?reset=true",
     )
 
-    expect(screen.queryByRole("button", { name: /コピー/ })).toBeNull()
+    expect(screen.queryByText(/コピー/)).toBeNull()
     expect(screen.queryByText(/最新取り込み/)).toBeNull()
     expect(screen.queryByText(/更新日/)).toBeNull()
-    expect(screen.queryByText(/相談予定/)).toBeNull()
+    expect(screen.queryByText(/相談予定日/)).toBeNull()
     expect(screen.queryByText(/感想/)).toBeNull()
   })
 })

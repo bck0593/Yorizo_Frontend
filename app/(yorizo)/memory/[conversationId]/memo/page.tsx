@@ -48,15 +48,20 @@ export default function ConsultationMemoPage() {
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 flex flex-col flex-1 pb-24 pt-6 space-y-5">
         <YoriCard
           variant="info"
-          title="相談メモ"
-          description="専門家に伝えたいポイントを短くまとめました。"
+          title="相談メモをまとめました"
+          description="チャット内容から自動生成します。初回は少し時間がかかります。"
           icon={<YorizoAvatar size="sm" mood="satisfied" />}
           className="!bg-white"
+          data-testid="memo-hero-card"
         />
 
-        <YoriCard variant="info" title="最新の相談メモ" className="!bg-white">
+        <YoriCard variant="info" title="最新の相談メモ" className="!bg-white" data-testid="memo-latest-card">
           <div className="mt-3 space-y-3">
-            {isLoading && <ThinkingRow text="相談メモを生成しています..." className="py-2" />}
+            {isLoading && (
+              <div data-testid="memo-thinking">
+                <ThinkingRow text="相談メモを生成しています..." className="py-2" />
+              </div>
+            )}
 
             {error && (
               <div className="yori-card p-4 flex items-start gap-2 text-rose-700 bg-rose-50 border border-rose-100">
@@ -67,7 +72,7 @@ export default function ConsultationMemoPage() {
 
             {!isLoading && !error && memo && (
               <div className="space-y-3">
-                <YoriCard variant="info" title="今回気になっていること">
+                <YoriCard variant="info" title="今回気になっていること" data-testid="memo-current-points">
                   <ul className="list-disc list-inside text-sm text-[var(--yori-ink)] space-y-1 leading-relaxed">
                     {memo.current_points.map((item, idx) => (
                       <li key={`${item}-${idx}`}>{item}</li>
@@ -75,7 +80,7 @@ export default function ConsultationMemoPage() {
                   </ul>
                 </YoriCard>
 
-                <YoriCard variant="info" title="専門家に伝えたい大事なポイント">
+                <YoriCard variant="info" title="専門家に伝えたい大事なポイント" data-testid="memo-important-points">
                   <ul className="list-disc list-inside text-sm text-[var(--yori-ink)] space-y-1 leading-relaxed">
                     {memo.important_points.map((item, idx) => (
                       <li key={`${item}-${idx}`}>{item}</li>
@@ -86,7 +91,7 @@ export default function ConsultationMemoPage() {
             )}
 
             {!isLoading && !error && !memo && (
-              <div className="yori-card p-4 text-sm text-[var(--yori-ink)]">
+              <div className="yori-card p-4 text-sm text-[var(--yori-ink)]" data-testid="memo-empty">
                 まだ相談メモがありません。チャットから話し始めてみてください。
               </div>
             )}
@@ -99,12 +104,14 @@ export default function ConsultationMemoPage() {
             title="相談予約をする"
             description="よろず支援などの窓口につなげます。"
             href={bookingHref}
+            data-testid="memo-cta-booking"
           />
           <YoriCard
             variant="link"
             title="もう一度チャットで整理する"
             description="新しいチャットを最初から始めます。"
             href="/chat?reset=true"
+            data-testid="memo-cta-rechat"
           />
         </div>
       </div>

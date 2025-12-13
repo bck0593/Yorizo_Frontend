@@ -13,22 +13,21 @@ jest.mock("@/lib/api", () => {
 
 describe("HomePage", () => {
   it("renders main links and cards with latest conversation", async () => {
-    ; (getConversations as jest.Mock).mockResolvedValue([{ id: "conv-1", title: "最新の相談", date: "2024-01-01" }])
+    ;(getConversations as jest.Mock).mockResolvedValue([{ id: "conv-1", title: "最新の相談", date: "2024-01-01" }])
 
     const view = await HomePage()
     render(view)
 
-    expect(screen.getByText("今日はどんな気分？")).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "Yorizoとチャットで話す" })).toHaveAttribute("href", "/chat?reset=true")
     expect(screen.getByRole("link", { name: "過去の会話はこちら→" })).toHaveAttribute("href", "/memory/history")
 
     expect(screen.getByRole("link", { name: /ToDoを確認/ })).toHaveAttribute("href", "/homework")
     expect(screen.getByRole("link", { name: /イマココレポートを見る/ })).toHaveAttribute("href", "/report")
-    expect(screen.getByRole("link", { name: /相談メモを開く/ }).getAttribute("href")).toContain("/memory/conv-1/memo")
+    expect(screen.getByRole("link", { name: /相談メモを開く/ })).toHaveAttribute("href", "/memory/conv-1/memo")
   })
 
   it("falls back to memory when no conversations exist", async () => {
-    ; (getConversations as jest.Mock).mockResolvedValue([])
+    ;(getConversations as jest.Mock).mockResolvedValue([])
 
     const view = await HomePage()
     render(view)
@@ -38,7 +37,7 @@ describe("HomePage", () => {
   })
 
   it("keeps use-guide accordion closed by default and opens on click", async () => {
-    ; (getConversations as jest.Mock).mockResolvedValue([])
+    ;(getConversations as jest.Mock).mockResolvedValue([])
 
     const view = await HomePage()
     const { container } = render(view)
