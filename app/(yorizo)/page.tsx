@@ -16,7 +16,7 @@ const STEP_ITEMS = [
   },
   {
     title: "イマココレポート",
-    description: "チャット・宿題・PDFをまとめて“いま”を俯瞰します。次の一歩もここから。",
+    description: "チャット・ToDo・PDFをまとめて“いま”を俯瞰します。次の一歩もここから。",
   },
   {
     title: "相談メモ",
@@ -101,7 +101,7 @@ export default async function HomePage() {
         <YoriCard
           variant="link"
           title="イマココレポートを見る"
-          description="診断スコアと相談メモ、宿題を 1 枚で確認できます。"
+          description="診断スコアと相談メモ、ToDoを 1 枚で確認できます。"
           href="/report"
           icon={<LineChart className="h-5 w-5" />}
         />

@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "ホーム", href: "/", icon: Home },
   { label: "よろず相談", href: "/yorozu", icon: MessageCircle },
   { label: "Yorizoの記憶", href: "/memory", icon: Sprout },
-  { label: "宿題", href: "/homework", icon: NotebookPen },
+  { label: "ToDo", href: "/homework", icon: NotebookPen },
   { label: "イマココ", href: "/report", icon: LineChart },
 ]
 
