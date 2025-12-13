@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Loader2 } from "lucide-react"
-import { ChevronDownIcon } from "@heroicons/react/24/solid"
+import { ChevronDownIcon } from "lucide-react"
 import clsx from "clsx"
 import {
   ResponsiveContainer,

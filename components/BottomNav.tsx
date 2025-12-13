@@ -3,7 +3,7 @@
 import type { ComponentType } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, MessageCircle, NotebookPen, Sprout, LineChart } from "lucide-react"
+import { Home, MessageCircle, LineChart, CalendarDays } from "lucide-react"
 import clsx from "clsx"
 
 type NavItem = {
@@ -14,10 +14,9 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "ホーム", href: "/", icon: Home },
-  { label: "よろず相談", href: "/yorozu", icon: MessageCircle },
-  { label: "Yorizoの記憶", href: "/memory", icon: Sprout },
-  { label: "ToDo", href: "/homework", icon: NotebookPen },
+  { label: "チャット", href: "/chat", icon: MessageCircle },
   { label: "イマココ", href: "/report", icon: LineChart },
+  { label: "相談予約", href: "/yorozu", icon: CalendarDays },
 ]
 
 export function BottomNav() {
@@ -31,7 +30,7 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--yori-outline)] bg-[rgba(232,245,248,0.9)] backdrop-blur-md">
       <div className="mx-auto max-w-[820px] px-3 pb-3">
-        <div className="grid grid-cols-5 items-center rounded-3xl bg-white/90 border border-[var(--yori-outline)] shadow-[0_16px_46px_rgba(39,35,67,0.12)] px-2 py-2">
+        <div className="grid grid-cols-4 items-center rounded-3xl bg-white/90 border border-[var(--yori-outline)] shadow-[0_16px_46px_rgba(39,35,67,0.12)] px-2 py-2">
           {NAV_ITEMS.map((item) => {
             const active = isActive(item.href)
             return (
