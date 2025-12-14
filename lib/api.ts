@@ -34,6 +34,14 @@ export type ChatTurnResponse = {
   step: number
   done: boolean
   citations?: Citation[] | null
+  checkpoint?: {
+    index: number
+    title: string
+    summary: string
+    updated_at: string
+  } | null
+  show_consult_memo?: boolean
+  memo_available?: boolean
 }
 
 export async function chatTurn(payload: ChatTurnRequest): Promise<ChatTurnResponse> {
