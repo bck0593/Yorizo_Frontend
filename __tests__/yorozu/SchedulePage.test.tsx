@@ -29,15 +29,15 @@ jest.mock("next/navigation", () => ({
 const availability = [
   {
     date: "2025-01-02",
-    slots: ["10:00-11:00"],
-    booked_slots: ["10:00-11:00"],
+    slots: ["10:00-11:00", "11:00-12:00", "14:00-15:00", "15:00-16:00"],
+    booked_slots: ["10:00-11:00", "11:00-12:00", "14:00-15:00", "15:00-16:00"],
     available_count: 0,
   },
   {
     date: "2025-01-03",
-    slots: ["11:00-12:00", "13:00-14:00"],
+    slots: ["10:00-11:00", "11:00-12:00", "14:00-15:00", "15:00-16:00"],
     booked_slots: ["11:00-12:00"],
-    available_count: 1,
+    available_count: 3,
   },
 ]
 
@@ -45,7 +45,7 @@ const expert = {
   id: "expert-1",
   name: "テスト専門家",
   title: "中小企業診断士",
-  organization: "テスト機構",
+  organization: "テスト機関",
   tags: [],
   rating: 4.8,
   review_count: 10,
@@ -78,5 +78,12 @@ describe("SchedulePage", () => {
     const bookedLabel = screen.getByText("予約済み")
     const bookedButton = bookedLabel.closest("button")
     expect(bookedButton).toHaveAttribute("aria-disabled", "true")
+  })
+
+  it("renders new default slot and hides removed one", async () => {
+    render(<SchedulePage />)
+
+    await waitFor(() => expect(screen.getByText("15:00-16:00")).toBeInTheDocument())
+    expect(screen.queryByText("16:00-17:00")).not.toBeInTheDocument()
   })
 })

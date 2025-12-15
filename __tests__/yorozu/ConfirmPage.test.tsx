@@ -41,7 +41,7 @@ const expert = {
   id: "expert-1",
   name: "テスト専門家",
   title: "中小企業診断士",
-  organization: "テスト機構",
+  organization: "テスト機関",
   tags: [],
   rating: 4.8,
   review_count: 10,
@@ -89,8 +89,6 @@ describe("ConfirmPage", () => {
     ;(createConsultationBooking as jest.Mock).mockResolvedValue({})
     render(<ConfirmPage />)
 
-    const checkbox = await screen.findByRole("checkbox")
-    await userEvent.click(checkbox)
     await userEvent.click(screen.getByRole("button", { name: "この内容で予約する" }))
 
     await waitFor(() => expect(createConsultationBooking).toHaveBeenCalled())
@@ -101,13 +99,12 @@ describe("ConfirmPage", () => {
     ;(createConsultationBooking as jest.Mock).mockRejectedValue(new ApiError("conflict", 409))
     render(<ConfirmPage />)
 
-    const checkbox = await screen.findByRole("checkbox")
-    await userEvent.click(checkbox)
     await userEvent.click(screen.getByRole("button", { name: "この内容で予約する" }))
 
     await waitFor(() =>
-      expect(screen.getByText("予約が埋まりました。日程を選び直してください。")).toBeInTheDocument(),
+      expect(screen.getByText("この時間枠は既に予約されています。別の枠を選んでください")).toBeInTheDocument(),
     )
     expect(backMock).not.toHaveBeenCalled()
+    expect(screen.getByRole("button", { name: "日程を選び直す" })).toBeInTheDocument()
   })
 })

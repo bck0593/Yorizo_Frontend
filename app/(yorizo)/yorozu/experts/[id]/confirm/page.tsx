@@ -15,13 +15,13 @@ import {
 } from "@/lib/api"
 
 const USER_ID = "demo-user"
+const CONFLICT_MESSAGE = "この時間枠は既に予約されています。別の枠を選んでください"
 
 type FormState = {
   name: string
   phone: string
   email: string
   note: string
-  agree: boolean
 }
 
 const DEFAULT_FORM: FormState = {
@@ -29,7 +29,6 @@ const DEFAULT_FORM: FormState = {
   phone: "090-9999-9999",
   email: "ARIMAX@example.com",
   note: "",
-  agree: false,
 }
 
 export default function ConfirmPage() {
@@ -104,8 +103,8 @@ export default function ConfirmPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!expertId || !date || !time) return
-    if (!form.name || !form.agree) {
-      setError("お名前とポリシーへの同意は必須です。")
+    if (!form.name.trim()) {
+      setError("お名前を入力してください")
       return
     }
     setIsSubmitting(true)
@@ -128,7 +127,7 @@ export default function ConfirmPage() {
     } catch (err) {
       console.error(err)
       if (err instanceof ApiError && err.status === 409) {
-        setError("予約が埋まりました。日程を選び直してください。")
+        setError(CONFLICT_MESSAGE)
       } else {
         setError("予約の送信に失敗しました。時間をおいて再度お試しください。")
       }
@@ -145,7 +144,7 @@ export default function ConfirmPage() {
           onClick={() => router.back()}
           className="yori-chip bg-white hover:bg-[var(--yori-surface-muted)]"
         >
-          ← 戻る
+          もどる
         </button>
         <div className="space-y-1">
           <p className="text-lg font-bold text-[var(--yori-ink-strong)]">連絡先の確認</p>
@@ -198,7 +197,7 @@ export default function ConfirmPage() {
 
       <YoriSectionCard
         title="連絡先を入力"
-        description="予約確定に必要な連絡先を入力してください"
+        description="予約の確定に必要な連絡先を入力してください"
         icon={<Shield className="h-5 w-5 text-[var(--yori-ink-strong)]" />}
       >
         <form className="space-y-3" onSubmit={handleSubmit}>
@@ -252,25 +251,17 @@ export default function ConfirmPage() {
               placeholder="最近の状況や気になっていることなど"
             />
           </div>
-          <label className="flex items-start gap-2 text-xs text-[var(--yori-ink)]">
-            <input
-              type="checkbox"
-              checked={form.agree}
-              onChange={(e) => setForm((prev) => ({ ...prev, agree: e.target.checked }))}
-              className="mt-1"
-            />
-            <span>
-              <button type="button" className="underline" onClick={() => setIsPolicyOpen(true)}>
-                個人情報・プライバシーポリシー
-              </button>
-              に同意します
-            </span>
-          </label>
+          <div className="text-xs text-[var(--yori-ink)]">
+            <button type="button" className="underline" onClick={() => setIsPolicyOpen(true)}>
+              個人情報・プライバシーポリシー
+            </button>
+            をご確認ください（同意チェックは不要です）。
+          </div>
 
           {error && (
             <div className="space-y-2">
               <p className="text-xs text-rose-600">{error}</p>
-              {error.includes("日程") && (
+              {error.includes("枠") && (
                 <button
                   type="button"
                   onClick={() => router.back()}
@@ -314,7 +305,7 @@ export default function ConfirmPage() {
               </button>
             </div>
             <div className="space-y-2 text-sm text-[var(--yori-ink)] leading-relaxed">
-              <p>・利用目的: 予約管理、連絡、サービス向上のためにのみ利用します。</p>
+              <p>・利用目的: 予約の連絡、サービス向上のためにのみ利用します。</p>
               <p>・第三者提供: 法令で定める場合を除き、同意なく第三者へ提供しません。</p>
               <p>・安全管理: 適切なアクセス制限、暗号化等で保護します。</p>
               <p>・問い合わせ: 開示・訂正・削除のご希望は運営窓口までご連絡ください。</p>

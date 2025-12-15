@@ -198,8 +198,8 @@ export type Expert = {
 export type AvailabilityDay = {
   date: string
   slots: string[]
-  booked_slots?: string[]
-  available_count?: number
+  booked_slots: string[]
+  available_count: number
 }
 
 const EXPERTS_ENDPOINT = "/api/experts"

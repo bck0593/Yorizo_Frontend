@@ -71,11 +71,7 @@ export default function SchedulePage() {
     return `${month}/${day}`
   }
 
-  const availableCountForDay = (day: AvailabilityDay) => {
-    if (typeof day.available_count === "number") return day.available_count
-    const booked = new Set(day.booked_slots ?? [])
-    return day.slots.filter((slot) => !booked.has(slot)).length
-  }
+  const availableCountForDay = (day: AvailabilityDay) => day.available_count
 
   const handleConfirm = () => {
     if (!expertId || !selectedDate || !selectedSlot) return
@@ -98,11 +94,11 @@ export default function SchedulePage() {
           onClick={() => router.back()}
           className="yori-chip bg-white hover:bg-[var(--yori-surface-muted)]"
         >
-          ← 戻る
+          もどる
         </button>
         <div className="space-y-1">
           <p className="text-lg font-bold text-[var(--yori-ink-strong)]">相談予約</p>
-          <p className="text-sm text-[var(--yori-ink)]">翌日〜28日先（平日）のみ表示しています</p>
+          <p className="text-sm text-[var(--yori-ink)]">翌日〜28日先の平日の空き枠のみ表示します</p>
         </div>
       </div>
 
