@@ -1,9 +1,6 @@
 "use client"
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react"
-"use client"
-
-import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import clsx from "clsx"
 import { ArrowRight, ChevronDown, FileUp, SendHorizontal, X } from "lucide-react"
 import { useRouter } from "next/navigation"
