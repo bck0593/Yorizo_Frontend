@@ -15,6 +15,7 @@ import {
   LLM_FALLBACK_MESSAGE,
   getConversationDetail,
   guidedChatTurn,
+  refreshConsultationMemo,
   uploadDocument,
   type ChatOption,
   type ChatTurnResponse,
@@ -51,10 +52,10 @@ const FALLBACK_ASSISTANT: ChatMessage = {
   id: "intro",
   role: "assistant",
   content: "",
-  question: "まず、気になっているテーマを1つ選んでください。どれもピンとこなければ「その他」を選んでください。",
+  question: "気になるテーマを選んでください。どれも当てはまらなければ「その他」を選んでください。",
   options: [
     { id: "sales", label: "売上が不安", value: "売上が不安" },
-    { id: "cash", label: "お金の流れを整えたい", value: "お金の流れを整えたい" },
+    { id: "cash", label: "資金繰り", value: "資金繰り" },
     { id: "staff", label: "採用・スタッフ", value: "採用・スタッフ" },
     { id: "ops", label: "業務の回し方", value: "業務の回し方" },
     { id: "other", label: "その他", value: "その他" },
@@ -248,9 +249,9 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
       content: res.reply,
       question: res.question,
       options: res.options ?? [],
-      allowFreeText: res.allow_free_text,
+      allowFreeText: res.allow_free_text ?? true,
       step: stepForMessage,
-      done: res.done || stepForMessage >= DEFAULT_TOTAL_STEPS,
+      done: Boolean(res.done),
     }
     setMessages((prev) => [...prev, assistantMessage])
     setConversationId(res.conversation_id)
@@ -306,6 +307,22 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
     await sendToBackend({ message: text, selection: { type: "free_text", text } })
   }
 
+  const handleGenerateMemo = async () => {
+    if (!conversationId) return
+    setMemoLoading(true)
+    setError(null)
+    try {
+      await refreshConsultationMemo(conversationId)
+      router.push(`/memory/${conversationId}/memo`)
+    } catch (err) {
+      const message =
+        err instanceof ApiError ? err.message : "相談メモの作成に失敗しました。もう一度お試しください。"
+      setError(message)
+    } finally {
+      setMemoLoading(false)
+    }
+  }
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -324,7 +341,10 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
       setUploadMessage(`${result.filename} を保存しました`)
       setTimeout(() => setUploadMessage(null), 2500)
     } catch (err) {
-      const message = err instanceof ApiError ? err.message : "ファイルをアップロードできませんでした。容量や拡張子をご確認ください。"
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : "アップロードに失敗しました。サイズや拡張子をご確認ください。"
       setUploadError(message)
     } finally {
       setUploading(false)
@@ -352,7 +372,7 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
       >
         {isAssistant ? (
           <div className="space-y-2">
-            <p className="text-[11px] tracking-wide text-slate-500">Yorizo からのメッセージ</p>
+            <p className="text-[11px] tracking-wide text-slate-500">Yorizoからのメッセージ</p>
             {replyText && (
               <p className="text-sm text-slate-900 leading-relaxed whitespace-pre-line break-words">{replyText}</p>
             )}
@@ -372,7 +392,9 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
       return (
         <div key={msg.id} className="flex items-start gap-3">
           <YorizoAvatar size="sm" mood={loading ? "thinking" : "basic"} className="mt-1" />
-          <div className="flex-1 space-y-1">{bubble}</div>
+          <div className="flex-1 space-y-2">
+            {bubble}
+          </div>
         </div>
       )
     }
@@ -383,17 +405,6 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
       </div>
     )
   }
-
-  const stepIndicator = (
-    <div
-      data-testid="chat-step-indicator"
-      className="flex items-center justify-end text-xs text-[var(--yori-ink-strong)] pt-1"
-    >
-      <span className="inline-flex items-center rounded-full border border-[var(--yori-outline)] bg-white px-3 py-1 font-semibold shadow-sm">
-        ステップ {currentStep} / {DEFAULT_TOTAL_STEPS}
-      </span>
-    </div>
-  )
 
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-3 pb-16 px-4 md:px-6">
@@ -460,7 +471,7 @@ export default function ChatClient({ topic, initialConversationId, reset }: Chat
                       type="button"
                       onClick={() => removeAttachment(file.id)}
                       className="text-[var(--yori-ink-soft)] hover:text-[var(--yori-ink-strong)]"
-                      aria-label="添付を削除"
+                      aria-label="Remove attachment"
                     >
                       <X className="h-4 w-4" />
                     </button>
