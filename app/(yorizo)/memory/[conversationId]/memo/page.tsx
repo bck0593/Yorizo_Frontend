@@ -52,7 +52,6 @@ export default function ConsultationMemoPage() {
     fetchMemo()
   }, [conversationId])
 
-  const backToChatHref = conversationId ? `/chat?conversationId=${conversationId}` : "/chat"
   const bookingHref = conversationId ? `/yorozu?conversationId=${conversationId}` : "/yorozu"
   const createdAtLabel = memo ? formatYyyyMmDd(memo.created_at) : "--"
 
@@ -62,7 +61,7 @@ export default function ConsultationMemoPage() {
         <YoriSectionCard
           tone="muted"
           title="相談メモをまとめました"
-          description="チャット内容から自動生成します。初回は少し時間がかかります。このメモは初回生成のスナップショットで、自動更新されません。"
+          description="課題をクリアになったら、専門家への相談も検討しましょう。話題を変えて、もう一度整理するのもいいかもしれませんね。"
           icon={<YorizoAvatar size="sm" mood="satisfied" />}
           data-testid="memo-hero-card"
         />
@@ -112,18 +111,18 @@ export default function ConsultationMemoPage() {
 
         <div className="grid gap-3 sm:grid-cols-2">
           <YoriCard
-            variant="link"
-            title="チャットに戻る（同一会話）"
-            description="この会話の続きから相談できます。"
-            href={backToChatHref}
-            data-testid="memo-cta-back-to-chat"
-          />
-          <YoriCard
             variant="primaryLink"
             title="相談予約をする"
             description="よろず支援などの窓口につなげます。"
             href={bookingHref}
             data-testid="memo-cta-booking"
+          />
+          <YoriCard
+            variant="link"
+            title="チャットに戻る（同一会話）"
+            description="同じ会話で続きを送信できます。"
+            href={conversationId ? `/chat?conversationId=${conversationId}` : "/chat"}
+            data-testid="memo-cta-back"
           />
           <YoriCard
             variant="link"
