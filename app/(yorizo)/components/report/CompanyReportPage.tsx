@@ -504,7 +504,6 @@ export default function CompanyReportPage() {
   const yorizoActions =
     (thinkingQuestions && thinkingQuestions.length ? thinkingQuestions : []).map((q) => q.trim())
   const topTodos = (shortTermActions || []).map((title, idx) => ({ id: `todo-${idx}`, title }))
-  const companyId = report?.company?.id || COMPANY_ID
   const qualitative = report?.qualitative
 
   const overallDetail = report?.current_state || summaryComment
@@ -861,16 +860,11 @@ export default function CompanyReportPage() {
             </AccordionSection>
           </section>
 
-          <div className="mt-6 flex flex-col gap-2 md:flex-row md:justify-center">
+          <div className="mt-6 w-full max-w-md mx-auto">
             <PrimaryCtaButton
               label="よろず支援拠点に相談する"
               onClick={() => router.push("/yorozu")}
-              className="w-full md:w-auto text-xs md:text-sm"
-            />
-            <PrimaryCtaButton
-              label="もう一度タイプ診断する"
-              onClick={() => router.push(`/companies/${companyId}/diagnosis`)}
-              className="w-full md:w-auto text-xs md:text-sm"
+              className="w-full text-xs md:text-sm"
             />
           </div>
         </>
@@ -882,7 +876,6 @@ export default function CompanyReportPage() {
     </div>
   )
 }
-
 
 
 
