@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2 } from "lucide-react"
 import { ChevronDownIcon } from "lucide-react"
 import clsx from "clsx"
 import {
@@ -639,21 +638,7 @@ export default function CompanyReportPage() {
 
   return (
     <div className="yori-report flex flex-col gap-6">
-      <header className="yori-card-muted p-5 md:p-6 space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <button type="button" onClick={() => router.back()} className="inline-flex items-center gap-2 text-sm text-[var(--yori-ink)]">
-            <ArrowLeft className="h-4 w-4" /> 戻る
-          </button>
-          <button
-            type="button"
-            onClick={fetchReport}
-            disabled={loading}
-            className="btn-secondary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold disabled:opacity-60"
-          >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            レポートを更新
-          </button>
-        </div>
+      <header className="yori-card-muted p-5 md:p-6">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold text-[var(--yori-ink-strong)]">イマココレポート</h1>
           <p className="text-sm text-[var(--yori-ink)]">チャット・ToDo・PDFをまとめて“いま”を俯瞰します。次の一歩もここから。</p>
@@ -969,8 +954,6 @@ export default function CompanyReportPage() {
     </div>
   )
 }
-
-
 
 
 

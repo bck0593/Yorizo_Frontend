@@ -19,6 +19,7 @@ jest.mock("@/lib/hooks/useCompanyProfile", () => ({
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     back: jest.fn(),
+    push: jest.fn(),
   }),
 }))
 
@@ -58,6 +59,8 @@ describe("CompanyReportPage", () => {
     await waitFor(() => expect(getCompanyReport).toHaveBeenCalled())
 
     expect(screen.getByText("イマココレポート")).toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: "戻る" })).not.toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: "レポートを更新" })).not.toBeInTheDocument()
     expect(screen.getByRole("button", { name: "よろず支援拠点に相談する" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "もう一度タイプ診断する" })).toBeInTheDocument()
   })
