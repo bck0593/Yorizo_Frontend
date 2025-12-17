@@ -15,6 +15,8 @@ import {
 } from "recharts"
 
 import { ThinkingRow } from "@/components/ThinkingRow"
+import { YoriSectionCard } from "@/components/YoriSectionCard"
+import { YorizoAvatar } from "@/components/YorizoAvatar"
 import { ApiError, createHomework, getCompanyReport, listDocuments, type CompanyReport, type DocumentItem } from "@/lib/api"
 import { useCompanyProfile } from "@/lib/hooks/useCompanyProfile"
 import { PrimaryCtaButton } from "@/components/ui/PrimaryCtaButton"
@@ -638,12 +640,13 @@ export default function CompanyReportPage() {
 
   return (
     <div className="yori-report flex flex-col gap-6">
-      <header className="yori-card-muted p-5 md:p-6">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-[var(--yori-ink-strong)]">イマココレポート</h1>
-          <p className="text-sm text-[var(--yori-ink)]">チャット・ToDo・PDFをまとめて“いま”を俯瞰します。次の一歩もここから。</p>
-        </div>
-      </header>
+      <YoriSectionCard
+        tone="muted"
+        title="イマココレポート"
+        description="決算情報やチャットの内容などから、「いまの会社のバランス」と「気になるポイント」をまとめました。"
+        icon={<YorizoAvatar mood="basic" size="sm" />}
+        data-testid="report-hero"
+      />
 
       {error && <p className="text-sm text-rose-500">{error}</p>}
       {loading && (
@@ -654,18 +657,7 @@ export default function CompanyReportPage() {
 
       {report && (
         <>
-          <section className="mb-4 md:mb-6">
-            <div className="rounded-2xl bg-[#FFF9E6] px-4 py-3 md:px-6 md:py-4 flex items-start gap-3">
-              <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-yellow-500">📝</div>
-              <div className="space-y-1 text-sm md:text-base">
-                <p className="text-slate-700">
-                  直近の決算やお話の内容から、「いまの会社のバランス」と「気になるポイント」をわかりやすく整理しました。まずは全体のイメージをつかんでみてください。
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="yori-card rounded-3xl p-3 md:p-4 mt-3">
+          <section className="yori-card rounded-3xl p-3 md:p-4">
             <h2 className="text-xs md:text-sm font-semibold text-slate-800 mb-2">経営バランス診断</h2>
             {isNoRadarData ? (
               <div className="rounded-xl border border-[color:var(--yori-line-strong)] bg-white p-4 text-sm text-[var(--yori-ink-soft)]">
@@ -954,7 +946,6 @@ export default function CompanyReportPage() {
     </div>
   )
 }
-
 
 
 

@@ -59,6 +59,19 @@ describe("CompanyReportPage", () => {
     await waitFor(() => expect(getCompanyReport).toHaveBeenCalled())
 
     expect(screen.getByText("イマココレポート")).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        "決算情報やチャットの内容などから、「いまの会社のバランス」と「気になるポイント」をまとめました。",
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText("チャット・ToDo・PDFをまとめて“いま”を俯瞰します。次の一歩もここから。"),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        "直近の決算やお話の内容から、「いまの会社のバランス」と「気になるポイント」をわかりやすく整理しました。まずは全体のイメージをつかんでみてください。",
+      ),
+    ).not.toBeInTheDocument()
     expect(screen.queryByRole("button", { name: "戻る" })).not.toBeInTheDocument()
     expect(screen.queryByRole("button", { name: "レポートを更新" })).not.toBeInTheDocument()
     expect(screen.getByRole("button", { name: "よろず支援拠点に相談する" })).toBeInTheDocument()
