@@ -53,7 +53,6 @@ export default function ConsultationMemoPage() {
   }, [conversationId])
 
   const bookingHref = conversationId ? `/yorozu?conversationId=${conversationId}` : "/yorozu"
-  const chatHref = conversationId ? `/chat?conversationId=${conversationId}` : "/chat"
   const createdAtLabel = memo ? formatYyyyMmDd(memo.created_at) : "--"
 
   return (
@@ -111,13 +110,6 @@ export default function ConsultationMemoPage() {
         </YoriSectionCard>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <YoriCard
-            variant="link"
-            title="チャットに戻る（同一会話）"
-            description="この相談の続きに戻ります。"
-            href={chatHref}
-            data-testid="memo-cta-chat"
-          />
           <YoriCard
             variant="primaryLink"
             title="相談予約をする"
